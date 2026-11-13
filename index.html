@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#10243e"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="Dispatch Academy"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="description" content="Audio-first interactive Anchorage dispatch call simulation with mock CAD entry for iPhone, iPad and desktop."/>
+<title>Anchorage Dispatch Academy • Live Audio Calls · QC4</title>
+<style>
+/* Dispatch Academy — APD navy and white. Flat panels, one type family, monospace only inside the CAD entry. */
+:root{--navy:#10243e;--navy2:#1c3b61;--navy3:#2a4f7c;--ink:#14233a;--muted:#566980;--line:#d5dde7;--fog:#eef2f6;--paper:#fff;--green:#17805a;--greenbg:#e2f4ec;--amber:#8a5300;--amberbg:#fff2d9;--red:#a8322d;--redbg:#fdecea;--blue:#235f9f;--bluebg:#e8f0fa;--focus:#4d9be0;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;--sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:16px}
+body{margin:0;min-height:100vh;background:var(--fog);color:var(--ink);font:16px/1.5 var(--sans);-webkit-font-smoothing:antialiased;overscroll-behavior-y:contain}
+button,input,select,textarea{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+button{cursor:pointer}
+button:disabled{cursor:not-allowed;opacity:.45}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+a{color:var(--blue)}
+h1,h2,h3,h4,p{margin:0}
+h1{font-size:clamp(26px,3.2vw,34px);line-height:1.15;letter-spacing:-.02em;font-weight:750}
+h2{font-size:20px;line-height:1.25;letter-spacing:-.01em;font-weight:700}
+h3{font-size:17px;line-height:1.3;font-weight:700}
+h4{font-size:15px;font-weight:700}
+small,.small{font-size:13px;color:var(--muted)}
+.muted{color:var(--muted)}
+.hidden{display:none!important}
+.skip{position:absolute;left:-999px;top:8px;background:#fff;padding:8px 12px;border-radius:8px;z-index:99}
+.skip:focus{left:8px}
+
+/* ---------- shell ---------- */
+.shell{display:grid;grid-template-columns:232px minmax(0,1fr);min-height:100vh}
+.sidebar{background:var(--navy);color:#fff;padding:22px 14px;display:flex;flex-direction:column;gap:22px;position:sticky;top:0;height:100vh}
+.brand{display:flex;align-items:center;gap:11px;padding:0 8px}
+.brand b{display:block;font-size:16px;line-height:1.2}
+.brand small{display:block;color:#a9bdd4;font-size:12px}
+.markicon{width:40px;height:40px;flex:none;border-radius:10px;display:grid;place-items:center;background:#fff;color:var(--navy);font-size:13px;font-weight:800;letter-spacing:.02em}
+.nav{display:grid;gap:4px}
+.nav button{border:0;border-radius:10px;text-align:left;color:#c9d6e6;background:transparent;padding:11px 12px;font-weight:600;display:flex;gap:12px;align-items:center;min-height:46px}
+.nav button:hover{background:var(--navy2)}
+.nav button.active{background:#fff;color:var(--navy)}
+.icon{display:inline-grid;place-items:center;width:22px;height:22px;flex:none}
+.icon svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.asidefoot{margin-top:auto;padding:0 8px;font-size:12px;color:#a9bdd4;line-height:1.5}
+.mobileheader{display:none}
+.workspace{padding:34px clamp(18px,4vw,56px) 64px;min-width:0;outline:none}
+.panel{display:none;max-width:1180px}
+.panel.active{display:block}
+.intro{margin-bottom:22px;max-width:68ch}
+.intro p{margin-top:8px;color:var(--muted)}
+.footerline{margin-top:36px;max-width:90ch;color:var(--muted);font-size:12px;line-height:1.6}
+
+/* ---------- building blocks ---------- */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:24px}
+.card + .card,.hero + .card{margin-top:16px}
+.sectionhead{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:16px}
+.sectionhead p{margin-top:3px}
+.actions{display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+.actions.right{justify-content:flex-end}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid #b9c5d3;border-radius:10px;padding:10px 16px;background:#fff;color:var(--ink);font-size:15px;font-weight:650;min-height:46px;text-decoration:none}
+.btn:hover{background:#f3f6f9}
+.btn:active{transform:scale(.985)}
+.btn.primary{background:var(--navy);border-color:var(--navy);color:#fff}
+.btn.primary:hover{background:var(--navy2)}
+.btn.light{background:#fff;border-color:#fff;color:var(--navy)}
+.btn.light:hover{background:#e9eff6}
+.btn.onnavy{background:transparent;border-color:#6f8aab;color:#fff}
+.btn.onnavy:hover{background:var(--navy2)}
+.btn.ghost{background:transparent;border-color:transparent}
+.btn.ghost:hover{background:#e3e9f0}
+.btn.danger{color:var(--red)}
+.btn.dangerfill{background:var(--red);border-color:var(--red);color:#fff}
+.btn.sm{min-height:42px;padding:8px 12px;font-size:14px}
+.btn.lg{min-height:52px;padding:12px 22px;font-size:16px}
+.linkbtn{border:0;background:none;padding:0;color:var(--blue);font-weight:650;text-decoration:underline;text-underline-offset:3px}
+.pill{display:inline-block;border-radius:99px;background:#e1e8f0;color:#33485f;padding:3px 10px;font-weight:700;font-size:13px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.pill.good{background:var(--greenbg);color:var(--green)}
+.pill.mid{background:var(--amberbg);color:var(--amber)}
+.pill.low{background:var(--redbg);color:var(--red)}
+.codechip{display:inline-block;font-family:var(--mono);font-size:13px;font-weight:700;background:#e1e8f0;color:var(--navy);border-radius:6px;padding:3px 8px;letter-spacing:.02em;vertical-align:middle}
+.callout{padding:14px 16px;background:var(--bluebg);border-left:4px solid var(--blue);border-radius:8px;font-size:14px;color:#24405f;margin-top:16px}
+.callout.warn{background:var(--amberbg);border-left-color:#c98a1d;color:#6b4300}
+.callout.critical{background:var(--redbg);border-left-color:var(--red);color:#7c2622}
+.empty{border:1px dashed #b9c5d3;border-radius:12px;text-align:center;padding:36px 20px;color:var(--muted)}
+.empty .btn{margin-top:14px}
+.rule{height:1px;background:var(--line);margin:20px 0}
+.bullets{margin:8px 0 0;padding-left:20px}
+.bullets li{margin-bottom:6px}
+.dividerTitle{font-size:14px;font-weight:700;color:var(--navy);margin:22px 0 10px;padding-top:14px;border-top:1px solid var(--line)}
+.eyebrow{font-size:13px;font-weight:650;color:var(--muted)}
+.subnote{font-size:13px;color:var(--muted);margin-top:10px}
+
+/* ---------- forms ---------- */
+.field{display:flex;flex-direction:column;gap:5px;min-width:0}
+.field label,.compose>label{font-size:13px;font-weight:650;color:#3d5068}
+.field input,.field select,.field textarea,.compose textarea,.inline-question-row input{border:1px solid #b4c1d0;background:#fff;border-radius:9px;padding:11px 12px;min-width:0;width:100%;font-size:16px;line-height:1.4;-webkit-appearance:none;appearance:none}
+.field input,.field select{min-height:48px}
+.field textarea{resize:vertical;min-height:92px}
+.field input:focus,.field textarea:focus,.field select:focus,.compose textarea:focus,.inline-question-row input:focus{border-color:var(--navy3);box-shadow:0 0 0 3px #2a4f7c2e;outline:none}
+select{background-image:linear-gradient(45deg,transparent 50%,#536979 50%),linear-gradient(135deg,#536979 50%,transparent 50%);background-position:calc(100% - 19px) calc(50% - 2px),calc(100% - 13px) calc(50% - 2px);background-size:6px 6px,6px 6px;background-repeat:no-repeat;padding-right:34px!important}
+select:disabled{opacity:.55;cursor:not-allowed}
+::placeholder{color:#8696a8}
+.fieldset{display:grid;gap:14px}
+.fieldset.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.field.full{grid-column:1/-1}
+.switch{display:flex;gap:12px;align-items:flex-start;margin-top:20px;cursor:pointer}
+.switch input{position:absolute;opacity:0;width:1px;height:1px}
+.switch .track{flex:none;width:46px;height:28px;border-radius:99px;background:#b4c1d0;position:relative;transition:background .15s;margin-top:1px}
+.switch .track:after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .15s}
+.switch input:checked + .track{background:var(--green)}
+.switch input:checked + .track:after{transform:translateX(18px)}
+.switch input:focus-visible + .track{outline:3px solid var(--focus);outline-offset:2px}
+.switch b{display:block}
+.switch small{display:block;max-width:60ch}
+
+/* ---------- home ---------- */
+.hero{background:var(--navy);color:#fff;border-radius:16px;padding:clamp(24px,4vw,40px)}
+.hero h1{max-width:20ch}
+.hero p{margin-top:10px;color:#c9d6e6;max-width:56ch;font-size:17px}
+.hero .actions{margin-top:24px}
+.hero-status{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:650;color:#bfe9d6;margin-bottom:14px}
+.ring-dot{width:10px;height:10px;border-radius:50%;background:#3fd59a;box-shadow:0 0 0 0 #3fd59a80;animation:ring 1.8s infinite}
+@keyframes ring{0%{box-shadow:0 0 0 0 #3fd59a80}70%,100%{box-shadow:0 0 0 12px #3fd59a00}}
+.statrow{display:flex;gap:32px;align-items:flex-end;flex-wrap:wrap}
+.stat strong{display:block;font-size:34px;line-height:1.05;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.stat span{font-size:13px;color:var(--muted)}
+.stat.grow{flex:1;min-width:180px}
+.spark{display:flex;align-items:flex-end;gap:5px;height:48px;margin-bottom:4px}
+.spark i{flex:1;max-width:26px;border-radius:4px 4px 0 0;background:#9fb1c6}
+.spark i.good{background:var(--green)}.spark i.mid{background:#d39a2c}.spark i.low{background:var(--red)}
+.nextup{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;counter-reset:step}
+.steps li{counter-increment:step;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.steps li:before{content:counter(step);width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:700;font-size:14px}
+.steps p{color:var(--muted);font-size:14px;flex:1}
+.steps .btn{margin-top:6px}
+
+/* ---------- study ---------- */
+.topic-grid{display:grid;grid-template-columns:240px minmax(0,1fr);gap:18px;align-items:start}
+.topic-list{display:flex;flex-direction:column;gap:6px}
+.topic-list button{text-align:left;border:1px solid var(--line);border-radius:10px;background:#fff;padding:11px 14px;display:flex;flex-direction:column;gap:2px;min-height:46px}
+.topic-list button b{font-family:var(--mono);font-size:14px}
+.topic-list button span{color:var(--muted);font-size:13px}
+.topic-list button.active{border-color:var(--navy);box-shadow:inset 4px 0 0 var(--navy);background:#f6f9fc}
+.quizopt{display:block;width:100%;text-align:left;margin:9px 0;padding:13px 15px;border:1px solid #b9c5d3;border-radius:10px;background:#fff;min-height:48px}
+.quizopt:hover:not(:disabled){border-color:var(--navy3);background:#f6f9fc}
+.quizopt.correct{border-color:var(--green);background:var(--greenbg)}
+.quizopt.wrong{border-color:var(--red);background:var(--redbg)}
+.quizopt:disabled{opacity:1;cursor:default}
+
+/* ---------- call setup ---------- */
+.modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.mode{text-align:left;border:1px solid #b9c5d3;border-radius:12px;background:#fff;padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+.mode b{font-size:16px}
+.mode span{font-size:14px;color:var(--muted)}
+.mode:hover{border-color:var(--navy3)}
+.mode.sel{border-color:var(--navy);box-shadow:inset 0 0 0 1px var(--navy);background:#f3f7fb}
+.mode.sel b:before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--navy);margin-right:8px}
+
+/* ---------- active call ---------- */
+.callbar{display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+.callbar h2{margin-top:2px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.timer{font-family:var(--mono);font-size:18px;font-weight:700;background:var(--navy);color:#fff;border-radius:8px;padding:6px 10px;font-variant-numeric:tabular-nums}
+.call-tabs{display:none}
+.simgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(360px,.95fr);gap:16px;align-items:start}
+.simgrid>.card{margin-top:0}
+.phone{padding:0;overflow:hidden}
+.phonehead{padding:14px 18px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.connection{display:inline-flex;align-items:center;gap:8px;font-weight:650;font-size:14px;color:#bfe9d6}
+.connection-dot{width:9px;height:9px;flex:none;border-radius:50%;background:#3fd59a}
+.call-audio-tools{background:#f3f6f9;padding:10px 16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+.call-audio-status{display:inline-flex;align-items:center;gap:9px;font-size:14px;color:#3d5068;font-weight:650;min-height:28px;flex:1;min-width:130px}
+.call-audio-status .pulse{width:10px;height:10px;background:#9fb1c6;border-radius:50%;flex:none}
+.call-audio-status.speaking .pulse{animation:callpulse 1.05s infinite;background:var(--green)}
+.call-audio-status.listening .pulse{animation:callpulse .65s infinite;background:#d0661a}
+@keyframes callpulse{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.6);opacity:1}}
+.transcript{min-height:300px;max-height:420px;overflow-y:auto;background:#fafbfd;padding:18px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
+.msg{max-width:88%;align-self:flex-start}
+.msg.operator{align-self:flex-end}
+.msg .who{font-size:12px;color:var(--muted);font-weight:650;margin-bottom:3px}
+.msg.operator .who{text-align:right}
+.bubble{border-radius:14px 14px 14px 4px;background:#fff;border:1px solid var(--line);padding:10px 14px;line-height:1.45;white-space:pre-wrap}
+.operator .bubble{background:var(--navy);border-color:var(--navy);color:#fff;border-radius:14px 14px 4px 14px}
+.msg.update{max-width:100%;align-self:stretch}
+.msg.update .who{color:var(--amber)}
+.msg.update .bubble{border-color:#e0b25c;background:var(--amberbg);border-left-width:4px;border-radius:8px}
+.audio-caption-hidden{min-height:150px;display:flex;align-items:center;justify-content:center;text-align:center;background:#fafbfd;color:var(--muted);padding:20px}
+.audio-caption-hidden .caption-note{max-width:40ch;font-size:15px}
+.audio-caption-hidden strong{display:block;color:var(--ink);margin-bottom:4px}
+#captionsHidden[hidden],#transcript[hidden]{display:none!important}
+.compose{padding:16px 18px;border-top:1px solid var(--line)}
+.compose textarea{min-height:76px;resize:vertical;margin-top:5px;display:block}
+.compose .actions{margin-top:10px}
+.guide{margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.hintlist{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.hint{font-size:14px;background:#fff;color:#33485f;border:1px solid #b9c5d3;border-radius:99px;padding:6px 12px;min-height:36px}
+.hint:hover{border-color:var(--navy3);background:#f3f7fb}
+.hint.asked{background:var(--greenbg);border-color:#9fd4bd;color:var(--green)}
+.cad{padding:20px 22px}
+.cad-voice-quick{display:none}
+.cad .fieldset{gap:11px}
+.cad .field input,.cad .field textarea{font-family:var(--mono);font-size:15px;padding:9px 11px}
+.cad .field input{min-height:44px}
+.cad .field textarea{min-height:104px}
+.cad .field.smallarea textarea{min-height:70px}
+.inline-question-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;margin-top:8px}
+.inline-question-row input{min-height:46px}
+.mobile-usage-tip{display:none}
+
+/* ---------- review ---------- */
+.resultGrid{display:grid;grid-template-columns:300px minmax(0,1fr);gap:16px;align-items:start}
+.scoreRing{height:160px;width:160px;border-radius:50%;display:grid;place-items:center;margin:0 auto 14px;background:conic-gradient(var(--ringc,var(--navy)) var(--pct),#e1e8f0 0)}
+.scoreRing>div{background:#fff;border-radius:50%;width:124px;height:124px;display:grid;place-content:center;text-align:center}
+.scoreRing strong{font-size:36px;line-height:1;font-variant-numeric:tabular-nums}
+.scoreRing span{font-size:12px;color:var(--muted)}
+.scoreRing.good{--ringc:var(--green)}.scoreRing.mid{--ringc:#d39a2c}.scoreRing.low{--ringc:var(--red)}
+.fixlist{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px}
+.fixlist li{padding:10px 12px;border-radius:8px;background:var(--redbg);color:#7c2622;font-size:14px;font-weight:600}
+.checkrow{padding:10px 0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr) 92px 104px;gap:8px;align-items:center;font-size:15px}
+.checkrow:last-child{border-bottom:0}
+.checkrow .marker{font-size:13px;border-radius:6px;padding:3px 6px;font-weight:700;text-align:center;white-space:nowrap}
+.checkrow .crit{font-size:12px;font-weight:700;color:var(--red);margin-left:6px}
+.yes{background:var(--greenbg);color:var(--green)}
+.no{background:var(--redbg);color:var(--red)}
+.neutral{background:#e9eef4;color:#4a5d74}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-bottom:6px}
+.legend b{color:var(--ink)}
+details.fold{background:var(--paper);border:1px solid var(--line);border-radius:14px;margin-top:16px}
+details.fold>summary{cursor:pointer;padding:16px 22px;font-weight:700;font-size:17px;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:10px}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold>summary:after{content:"Show";font-size:14px;font-weight:650;color:var(--blue)}
+details.fold[open]>summary:after{content:"Hide"}
+details.fold>.foldbody{padding:0 22px 20px}
+.review-details{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.review-details .item,.modal .item{border:1px solid var(--line);border-radius:10px;padding:11px 13px;background:#fafbfd;font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.review-details .item b,.modal .item b{display:block;color:var(--muted);font-size:12px;font-weight:650;margin-bottom:3px}
+.modal .item{margin-bottom:8px}
+.cadrow{display:grid;grid-template-columns:190px minmax(0,1fr);gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+.cadrow:last-child{border-bottom:0}
+.cadrow b{color:var(--muted);font-weight:650}
+.cadrow span{font-family:var(--mono);white-space:pre-wrap;overflow-wrap:anywhere}
+.tline{margin:0 0 8px;font-size:15px}
+.tline b{color:var(--muted);font-weight:650}
+
+/* ---------- history and scenarios ---------- */
+.typechips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.historyrow,.bankitem{padding:14px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:14px;align-items:center}
+.historyrow:last-child,.bankitem:last-child{border-bottom:0}
+.historyrow .left{display:grid;gap:2px;min-width:0}
+.bankitem .lead{display:flex;gap:12px;align-items:center;min-width:0}
+.bankitem .lead small{display:block}
+
+/* ---------- overlays ---------- */
+.toast{position:fixed;bottom:24px;right:24px;z-index:40;background:var(--ink);color:#fff;padding:12px 16px;border-radius:10px;box-shadow:0 8px 28px #0d1b2e40;max-width:min(420px,calc(100vw - 36px));display:none;font-size:15px}
+.toast.show{display:block}
+.modalBg{display:none;position:fixed;inset:0;background:#0d1b2e99;z-index:50;align-items:center;justify-content:center;padding:16px}
+.modalBg.show{display:flex}
+.modal{background:#fff;border-radius:16px;width:min(720px,100%);max-height:90vh;overflow-y:auto;padding:24px;box-shadow:0 20px 60px #0d1b2e55}
+.modal.narrow{width:min(440px,100%)}
+.modal>p{color:var(--muted);margin-top:8px}
+.modal .actions.right{margin-top:22px}
+
+/* ---------- tablet and phone ---------- */
+@media (max-width:1024px){
+ .shell{display:block;min-height:100dvh}
+ .sidebar{display:none}
+ .mobileheader{display:block;background:var(--navy);color:#fff;padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px}
+ .mobileheader .markicon{width:36px;height:36px}
+ .mobilenav{position:fixed;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));left:0;right:0;bottom:0;z-index:30;background:#fff;border-top:1px solid var(--line);padding:5px max(6px,env(safe-area-inset-right,0px)) calc(5px + env(safe-area-inset-bottom,0px)) max(6px,env(safe-area-inset-left,0px))}
+ .mobilenav button{font-size:11px;line-height:1.2;background:transparent;color:#52657c;border:0;border-radius:10px;padding:6px 2px 4px;min-height:54px;display:flex;flex-direction:column;gap:3px;align-items:center;justify-content:center;font-weight:650}
+ .mobilenav button.active{color:var(--navy);background:#e6edf5}
+ .mobilenav .icon,.mobilenav .icon svg{width:24px;height:24px}
+ .workspace{padding:18px max(16px,env(safe-area-inset-right,0px)) calc(96px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+ .in-call .mobileheader{padding:0}
+ .in-call .mobileheader .brand{display:none}
+ .in-call .workspace{padding-top:calc(12px + env(safe-area-inset-top,0px))}
+ .toast{bottom:calc(88px + env(safe-area-inset-bottom,0px));right:12px;left:12px;max-width:none;text-align:center}
+ .modalBg{padding:calc(8px + env(safe-area-inset-top,0px)) 8px calc(8px + env(safe-area-inset-bottom,0px));align-items:flex-end}
+ .modal,.modal.narrow{width:100%;max-height:calc(100dvh - 30px - env(safe-area-inset-top,0px));border-radius:18px 18px 10px 10px;padding:22px 18px calc(22px + env(safe-area-inset-bottom,0px))}
+ .keyboard-open .mobilenav{display:none}
+ .keyboard-open .workspace{padding-bottom:30px}
+ .keyboard-open .toast{bottom:12px}
+}
+@media (max-width:920px){
+ .simgrid{display:block}
+ .simgrid[data-pane="caller"] .cad,.simgrid[data-pane="cad"] .phone{display:none}
+ .call-tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#dbe3ec;border-radius:12px;padding:4px;margin:0 0 12px;position:sticky;top:6px;z-index:20}
+ .call-tab{border:0;background:transparent;color:#465a72;border-radius:9px;font-weight:700;font-size:15px;min-height:46px;display:flex;align-items:center;justify-content:center;gap:8px}
+ .call-tab.active{background:#fff;color:var(--navy);box-shadow:0 1px 4px #10243e22}
+ .call-tab .tab-count{font-size:12px;background:#e1e8f0;color:#33485f;border-radius:99px;padding:1px 7px;font-variant-numeric:tabular-nums}
+ .call-tab .tab-count:empty{display:none}
+ .callbar{align-items:flex-start;margin-bottom:12px}
+ .callbar .actions{width:100%;gap:7px}
+ .callbar .actions .btn{flex:1;white-space:nowrap;padding-left:8px;padding-right:8px}
+ .callbar .actions .btn.primary{flex-basis:100%}
+ .transcript{min-height:160px;max-height:min(32dvh,260px);overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+ .phone{overflow:visible}
+ .phonehead{border-radius:13px 13px 0 0}
+ .compose .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+ .compose textarea{min-height:64px}
+ .cad-voice-quick{display:block;border:1px solid var(--line);border-radius:12px;background:#f3f6f9;padding:12px;margin-bottom:14px;position:sticky;top:62px;z-index:12}
+ .cad .field input,.cad .field textarea{font-size:16px}
+ .cad .field input{min-height:48px}
+ .mobile-usage-tip{display:block;margin-top:12px;font-size:13px;color:var(--muted)}
+}
+@media (max-width:760px){
+ .fieldset.two,.modes,.steps,.resultGrid,.topic-grid,.review-details{grid-template-columns:1fr}
+ .topic-list{flex-direction:row;overflow-x:auto;padding-bottom:4px}
+ .topic-list button{flex:none}
+ .topic-list button span{display:none}
+ .cad .fieldset.two{grid-template-columns:1fr 1fr}
+ .card{padding:18px 16px}
+ .card.phone{padding:0}
+ .cad{padding:16px 14px}
+ .msg{max-width:94%}
+ .historyrow,.bankitem{flex-wrap:wrap;align-items:flex-start}
+ .historyrow .actions,.bankitem .actions{width:100%;justify-content:space-between}
+ .checkrow{grid-template-columns:minmax(0,1fr) 84px 98px;font-size:14px}
+ .cadrow{grid-template-columns:1fr;gap:2px}
+ .hero .actions .btn{flex:1 1 100%}
+ details.fold>summary{padding:14px 16px}
+ details.fold>.foldbody{padding:0 16px 16px}
+}
+@media (max-width:420px){.callbar .actions .btn{font-size:13px;padding:8px 5px}.timer{font-size:16px;padding:7px 8px}}
+@media (max-width:390px){.cad .fieldset.two{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+@media print{
+ .sidebar,.mobileheader,.mobilenav,.actions,.compose,.phone,.footerline,.btn,.call-tabs,.cad-voice-quick,.toast,.callout{display:none!important}
+ .shell{display:block}.workspace{padding:0!important}body{background:#fff}
+ .card,details.fold{border:1px solid #999;break-inside:avoid}
+ .simgrid,.resultGrid{display:block}.simgrid .cad{display:block!important}
+ input,select,textarea{border:1px solid #999!important}
+ details.fold>summary:after{content:""}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="shell">
+ <aside class="sidebar">
+  <div class="brand"><div class="markicon" aria-hidden="true">911</div><div><b>Dispatch Academy</b><small>Anchorage self-study</small></div></div>
+  <nav class="nav" id="navDesktop" aria-label="Main menu"></nav>
+  <div class="asidefoot">Training simulation.<br>Not a live 911 system.</div>
+ </aside>
+ <div class="mobileheader"><div class="brand"><div class="markicon" aria-hidden="true">911</div><div><b>Dispatch Academy</b><small>Anchorage self-study</small></div></div><nav class="mobilenav" id="navMobile" aria-label="Main menu"></nav></div>
+ <main class="workspace" id="main" tabindex="-1">
+  <div id="home" class="panel"></div><div id="study" class="panel"></div><div id="practice" class="panel"></div><div id="review" class="panel"></div><div id="history" class="panel"></div><div id="bank" class="panel"></div>
+  <footer class="footerline">Training only. This is not APD CAD, an emergency call system, or an approved academy examination. Caller dialogue is scripted and voiced through the browser; speech recognition may use an online service. Caller information, incident narratives and vehicle plates are fictional; some numbered addresses are synthetic and unverified. Scenario urgency labels and automated scoring are illustrative, not official APD priority assignments or grades. Reference: <a href="https://www.anchoragepolice.com/dispatch" target="_blank" rel="noopener noreferrer">APD Dispatch public guidance</a> and <a href="https://streetnamesmasterlist.muni.org/" target="_blank" rel="noopener noreferrer">Municipality street names</a>.</footer>
+ </main>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<div id="modalBg" class="modalBg" role="presentation"><div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"></div></div>
+<script>
+'use strict';
+const BUILT_IN = [{"id":"01","code":"DISTW","variant":"Apartment / handgun","location":"2416 E 20th Avenue, Apartment 3, Anchorage","opening":"I need somebody over here. My ex is outside acting like an idiot. He's banging on my door and won't leave. I think he's got his gun with him.","caller":"Amanda Mitchell","phone":"907-555-0142","development":"He's getting into his black pickup now, I think he's leaving toward Bragaw.","priority":"Immediate safety concern","facts":{"cross":"East 20th Avenue, west of Bragaw Street. Apartment 3, left building.","incident":"My ex-boyfriend showed up uninvited, screaming and kicking the door.","weapon":"I saw a black handgun in his right hand when I looked through the window.","injuries":"Nobody's injured as far as I know.","physical":"He hasn't hit me tonight. It's threats and kicking the door.","time":"It started around five minutes ago.","suspect":"His name is Ryan Mitchell, 34, white, about six foot, 220 pounds, black Carhartt jacket, jeans and a baseball cap.","vehicle":"Black older Chevrolet Silverado pickup, maybe 2015, dent on passenger door.","plate":"Alaska JKB 731.","direction":"He was outside my door. If he drives off, he would be on East 20th Avenue.","children":"My two kids, six and nine, are here with me.","substances":"He's been drinking. I can hear it in his voice.","contact":"I want officers to talk to me, but please be careful at the door.","safety":"I am inside with the door locked; he is outside."}},{"id":"02","code":"ASLTW","variant":"Parking lot / bat","location":"3430 Spenard Road, Anchorage, parking lot","opening":"Some dude just hit another guy in the head with a baseball bat. He's on the ground. Somebody needs to get down here.","caller":"Chris Thompson","phone":"907-555-0183","development":"Wait, that guy's across Spenard looking back at us, and he's still holding the bat.","priority":"Immediate safety and medical concern","facts":{"cross":"On Spenard Road near West 36th Avenue, in the front parking lot.","incident":"I saw one guy swing an aluminum bat at another man after they argued.","weapon":"Silver aluminum baseball bat, about three feet long.","injuries":"He is bleeding from his forehead, conscious, sitting against a car.","physical":"It was a physical assault; he struck him at least once.","time":"A minute or two ago.","suspect":"White guy, late twenties, about five ten, thin, red hoodie, black pants, white shoes. I do not know his name.","direction":"He ran north on Spenard Road.","vehicle":"No vehicle seen associated with the attacker.","plate":"I never got a plate.","children":"No children that I saw.","substances":"I have no idea whether they've been drinking.","contact":"I'll wait by my truck if it's safe.","safety":"I'm standing away from them near my truck."}},{"id":"03","code":"DIST","variant":"Apartment lot / argument","location":"2830 E 15th Avenue, Building B, Anchorage","opening":"There are two guys outside my apartment screaming at each other, and it's been going on forever. Can someone get them to stop?","caller":"Rebecca Collins","phone":"907-555-0118","development":"Now they're shoving each other, and one guy just pushed the other into a parked car.","priority":"Reassess if situation becomes physical","facts":{"cross":"Building B, parking lot by the dumpsters off East 15th Avenue.","incident":"Two men have been yelling at each other in the parking lot.","weapon":"I haven't seen any weapons.","injuries":"Neither looks injured right now.","physical":"It is verbal so far; they are standing face to face.","time":"About fifteen or twenty minutes.","suspect":"One is a white man around forty with a beard, black sweatshirt and jeans. The other is younger, about twenty-five, gray hoodie and shorts. I do not know their names.","vehicle":"White Ford F-150 pickup idling in the parking lot.","plate":"I can't read the plate from up here.","direction":"Both are still by the dumpsters.","children":"No kids outside that I can see.","substances":"They sound drunk, but I cannot be certain.","contact":"I'd rather not have officers come to my apartment."}},{"id":"04","code":"REDDI","variant":"Tudor / impaired driver","location":"Eastbound Tudor Road near Lake Otis Parkway, Anchorage","opening":"I'm behind this Subaru on Tudor, and it's all over the road. It's almost sideswiped two cars.","caller":"Matt Peterson","phone":"907-555-0161","development":"He's turning left on Boniface now, heading north toward Northern Lights. I'm not following him anymore.","priority":"Active traffic hazard","facts":{"cross":"Eastbound on Tudor; just passed Lake Otis Parkway toward Boniface Parkway.","incident":"Car is swerving across lanes, braking suddenly and nearly hitting cars.","time":"I've been behind him about five minutes.","vehicle":"Dark blue newer Subaru Outback, wagon style with roof rack.","plate":"Alaska KJV 482, but I might have the middle letter wrong.","suspect":"I can see a white man, maybe forty or fifty, with a baseball cap driving.","direction":"Eastbound on Tudor toward Boniface before he turns.","substances":"I think he might be impaired, but I cannot know for sure.","weapon":"I have not seen a weapon.","injuries":"No collision or injury seen.","physical":"No altercation involved.","contact":"I'm driving a red Toyota RAV4; I will not chase him."}},{"id":"05","code":"ALARM","variant":"Residential burglary alarm","location":"4821 E 20th Avenue, Anchorage (fictional numbered address)","opening":"This is Melissa with Guardian Alarm Monitoring. I need to report a residential burglary alarm.","caller":"Melissa Grant","phone":"907-555-0132","development":"We're receiving another rear-door signal; we still can't verify anyone is inside.","priority":"Alarm response; determine facts","facts":{"incident":"Intrusion system shows rear-door contact, then interior living-room motion.","company":"Guardian Alarm Monitoring.","business":"Homeowner Thomas Reynolds; residential house.","alarmType":"Rear door contact and living-room motion detector.","audible":"Yes, audible burglary siren.","reset":"No, alarm has not reset.","trip":"Initial signal at 0217 hours.","premises":"Premises telephone is 907-555-0121.","keyholder":"Homeowner reached in Seattle; nobody should be there. No video verification.","contact":"No one physically at the property.","time":"0217 hours.","weapon":"Unknown. No one has been seen.","injuries":"No injury information available.","cross":"Single-family residence on East 20th Avenue."}},{"id":"06","code":"ALARM","variant":"Commercial burglary alarm","location":"6550 Old Seward Highway, Anchorage (fictional business)","opening":"Hi, this is Tyler at SecureWatch. I'm calling in a commercial alarm at an auto parts business.","caller":"Tyler Evans","phone":"907-555-0149","development":"Another motion detector went off, this time in the front showroom.","priority":"Alarm response; determine facts","facts":{"incident":"Rear service door then warehouse motion activated after closing.","company":"SecureWatch Monitoring.","business":"Arctic Auto Parts, business contact David Morrison.","alarmType":"Rear service entrance, then warehouse motion sensor.","audible":"No, it is a silent alarm.","reset":"No reset so far.","trip":"2312 hours.","premises":"Premises line is 907-555-0157.","keyholder":"First two keyholders called, neither answered; no authorized staff expected.","contact":"No visual confirmation from us.","time":"2312 hours.","weapon":"No weapon information available.","injuries":"No one observed.","cross":"Commercial building on Old Seward Highway."}},{"id":"07","code":"ACC","variant":"Collision / roadway blocked","location":"Old Seward Highway and E Dimond Boulevard, Anchorage","opening":"We just got in an accident down here at Dimond and Old Seward. We're blocking the road, and I don't know what to do.","caller":"Kevin Harris","phone":"907-555-0196","development":"The other driver says her neck hurts, and now she says she's dizzy.","priority":"Roadway hazard; reassess injury","facts":{"incident":"Two vehicles collided as one was turning left and the other traveling straight.","injuries":"Both people initially said they were okay.","vehicle":"My silver 2018 Honda Accord and a dark green Ford Escape.","plate":"My Accord JRN 624; Ford Escape KTA 391. Both Alaska plates.","driveable":"My Honda moves. The Escape's front tire looks badly damaged.","roadway":"One of the traffic lanes is blocked in the intersection.","officer":"Yes, the other driver and I disagree about what happened.","time":"Less than two minutes ago.","cross":"Old Seward Highway at East Dimond Boulevard, in the intersection.","weapon":"No weapons involved.","substances":"No impairment observed.","contact":"I can stay at the scene.","safety":"No fire, smoke or fluid leak observed. Airbags did not deploy in my car."}},{"id":"09","code":"REDDI","variant":"Muldoon / near miss","location":"Northbound Muldoon Road near DeBarr Road, Anchorage","opening":"I'm behind a guy on Muldoon driving like he's hammered. He almost hit somebody.","caller":"Brandon Ellis","phone":"907-555-0146","development":"He turned west on DeBarr. I lost sight of him after stopping at the light.","priority":"Active traffic hazard","facts":{"cross":"Northbound Muldoon approaching DeBarr Road; first noticed near 36th.","incident":"Crossing lane lines and changing speed; nearly struck another car.","time":"About four minutes.","vehicle":"Dark green 2012 Ford Escape.","plate":"Alaska LMT 583.","suspect":"White man, maybe fifty years old, gray hair.","direction":"North on Muldoon toward DeBarr.","substances":"I suspect impairment; I cannot confirm it.","injuries":"No collision or injuries seen.","weapon":"None seen.","contact":"I am in a white Subaru Forester and can pull over."}},{"id":"10","code":"ALARM","variant":"Commercial / multiple zones","location":"6558 Old Seward Highway, Anchorage (fictional business)","opening":"This is Pacific Monitoring Services. I've got an alarm at a business, can I give that to you?","caller":"Emily Davis","phone":"907-555-0187","development":"Now the front office motion detector is going off too.","priority":"Alarm response; reassess","facts":{"incident":"Rear service door then interior shop motion reported.","company":"Pacific Monitoring Services.","business":"Northern Auto Repair, owner David Palmer.","alarmType":"Rear service door and interior shop motion.","audible":"Yes, audible alarm.","reset":"No reset.","trip":"0238 hours.","premises":"907-555-0119.","keyholder":"Keyholder contacted and unable to respond; business closed at 1800.","cross":"Business on Old Seward Highway.","time":"0238 hours.","contact":"I am calling from the monitoring center.","weapon":"No information.","injuries":"No information."}},{"id":"11","code":"DIST","variant":"Eagle River / parking lot","location":"Old Glenn Highway near N Eagle River Loop Road, Eagle River","opening":"There are a couple guys yelling at each other, and one of them keeps kicking the other guy's truck.","caller":"Jennifer Brooks","phone":"907-555-0158","development":"Oh, one of them just punched the other in the face; he fell and got right back up.","priority":"Reassess if physical violence","facts":{"cross":"Parking lot near the intersection of Old Glenn Highway and North Eagle River Loop Road.","incident":"Two men fighting about a pickup. One keeps kicking its door.","weapon":"No weapons visible.","injuries":"No injury obvious at first.","physical":"Mostly yelling and kicking a truck; no punches yet.","time":"About ten minutes.","suspect":"White man around thirty-five with brown beard and blue jacket; another younger white man around twenty-five, gray sweatshirt and black pants.","vehicle":"White 2017 Ram 1500 pickup.","plate":"Alaska KHR 275.","direction":"Both are by the white pickup.","children":"No children nearby.","substances":"Both appear intoxicated.","contact":"I'll stay at the nearby business and talk to officers."}},{"id":"12","code":"ACC","variant":"Midtown / airbag","location":"W 36th Avenue and C Street, Anchorage","opening":"I just watched two cars hit each other at 36th and C. They're right in the intersection and traffic is backing up.","caller":"Anthony Mercer","phone":"907-555-0129","development":"The guy in the Chevrolet got out and says he has really bad chest pain. He's sitting on the curb.","priority":"Collision; injuries may emerge","facts":{"incident":"Red Toyota RAV4 turning left collided with gray Chevrolet Malibu going straight.","injuries":"Both drivers were awake; no injuries reported at first.","vehicle":"Red 2019 Toyota RAV4 and gray 2016 Chevrolet Malibu.","plate":"Toyota JFT 621 and Chevrolet LPN 842, both Alaska plates.","driveable":"Chevrolet has heavy front-end damage and may not drive; Toyota has side damage.","roadway":"Both vehicles are blocking the intersection.","officer":"I am a witness, not involved, and both drivers are present.","time":"Just happened.","cross":"West 36th Avenue at C Street.","safety":"Airbags deployed in the Chevrolet. No fire reported.","contact":"I am in a blue Honda Pilot and can safely pull over.","weapon":"No weapon involved."}},{"id":"13","code":"ASLTW","variant":"Downtown / broken bottle","location":"W 4th Avenue at G Street, Anchorage, nearby parking lot","opening":"I need the cops and probably an ambulance. My friend got cut real bad when some guy attacked him outside.","caller":"Michael Grant","phone":"907-555-0173","development":"I see the attacker coming back north on G Street, but I can't tell if he has that bottle.","priority":"Immediate medical and safety concern","facts":{"cross":"Parking lot near West 4th Avenue and G Street, downtown.","incident":"Two men were arguing; one struck my friend with a broken glass bottle.","weapon":"Broken glass bottle. I do not know if he still has it.","injuries":"Cut on the left forearm, bleeding a lot; victim is conscious.","physical":"Physical assault with a bottle.","time":"Two minutes ago.","suspect":"Alaska Native man, approximately thirty, five eight, medium build, green jacket, black jeans, black beanie; no name known.","vehicle":"No vehicle associated with suspect.","plate":"No vehicle or plate.","direction":"Suspect ran south on G Street.","children":"No children seen.","substances":"Not sure if either was drinking.","contact":"I am staying with the injured man.","safety":"We are away from the suspect for now."}},{"id":"14","code":"ALARM","variant":"Residential / possible authorized occupant","location":"1335 E 68th Avenue, Anchorage (fictional numbered address)","opening":"This is Alaska Security Monitoring. I'd like to call in a residential intrusion alarm.","caller":"Thomas Bell","phone":"907-555-0164","development":"Owner called us back; she thinks her teenager might have stopped by, but she isn't certain.","priority":"Alarm response; possible authorized occupant","facts":{"incident":"Front door alarm followed by living-room motion.","company":"Alaska Security Monitoring.","business":"Residential homeowner Susan Reynolds.","alarmType":"Front door contact followed by living-room motion.","audible":"Yes, audible.","reset":"No, still active.","trip":"2146 hours.","premises":"907-555-0191.","keyholder":"Owner contacted and twenty minutes away; she thinks nobody should be home.","cross":"Single-family home off East 68th Avenue.","time":"2146 hours.","contact":"Operator at monitoring station.","weapon":"No suspect or weapon seen.","injuries":"None reported."}},{"id":"15","code":"DISTW","variant":"Public / knife","location":"Boniface Parkway near E Northern Lights Boulevard, Anchorage, parking lot","opening":"There's a guy threatening people with a big knife in this parking lot. He keeps yelling at people walking by.","caller":"Patricia Coleman","phone":"907-555-0181","development":"He's walking south along Boniface now, and he's still carrying the knife.","priority":"Immediate safety concern","facts":{"cross":"Parking lot near Boniface Parkway and East Northern Lights Boulevard.","incident":"Man waving a knife and yelling at pedestrians.","weapon":"Large kitchen knife in his hand.","injuries":"I have not seen anyone injured.","physical":"He is threatening people but has not attacked anybody I saw.","time":"Five minutes.","suspect":"White man around forty, six foot one and thin, brown jacket, gray sweatpants, black boots.","vehicle":"No vehicle seen.","plate":"No vehicle.","direction":"Pacing the lot near Boniface; later walks south.","children":"No children seen.","substances":"Unknown whether drugs or alcohol are involved.","contact":"I am in my parked car and can talk by phone.","safety":"I have my doors locked."}},{"id":"16","code":"REDDI","variant":"Old Seward / lifted pickup","location":"Southbound Old Seward Highway approaching O'Malley Road, Anchorage","opening":"I'm a passenger, and this big black truck ahead keeps running off the side of the road. It just went up on the curb.","caller":"Olivia Foster","phone":"907-555-0137","development":"Truck turned east onto O'Malley and took off. We're not following it.","priority":"Active traffic hazard","facts":{"cross":"Southbound Old Seward Highway approaching O'Malley Road.","incident":"Truck drifts between lanes and nearly hit another pickup.","time":"Three minutes.","vehicle":"Black 2020 Ram 2500 pickup, lifted suspension, big tires, white toolbox in bed.","plate":"Alaska KSB 917.","suspect":"Male driver, age unclear; I could not see passengers.","direction":"Southbound Old Seward toward O'Malley.","substances":"I suspect impairment but cannot verify.","injuries":"No crash or injuries seen.","weapon":"No weapons seen.","contact":"I am the passenger in a silver Subaru Crosstrek."}},{"id":"17","code":"ACC","variant":"DeBarr / injured passenger","location":"DeBarr Road at Bragaw Street, Anchorage","opening":"We just got hit at DeBarr and Bragaw. My girlfriend's hurt, and our car won't move.","caller":"Jason Walker","phone":"907-555-0114","development":"She says she's getting really dizzy now and thinks she might pass out.","priority":"Collision with injury","facts":{"incident":"Toyota Highlander struck Subaru Impreza on passenger side.","injuries":"Girlfriend is conscious and has shoulder pain. No heavy bleeding.","vehicle":"Blue 2017 Subaru Impreza and white 2021 Toyota Highlander.","plate":"Subaru JMR 648 and Toyota KDL 294, Alaska plates.","driveable":"Subaru disabled. Toyota pulled into a lot.","roadway":"Subaru partly blocking intersection.","officer":"Both drivers are present; caller wants officer response.","time":"Less than two minutes ago.","cross":"DeBarr Road and Bragaw Street, in the intersection.","safety":"Airbags deployed in Subaru; no smoke or fire.","contact":"I am driving the Subaru and will remain.","weapon":"No weapons involved."}},{"id":"18","code":"DIST","variant":"Apartment / potential DV","location":"Apartment building near Spenard Road and W 36th Avenue, Anchorage","opening":"My upstairs neighbors have been screaming at each other and slamming things around. It's getting really bad up there.","caller":"Laura Bennett","phone":"907-555-0143","development":"There was a huge crash, and I just heard the woman yell 'get away from me!' Now it's quiet.","priority":"Reassess possible DV and child safety","facts":{"cross":"Apartment building near Spenard Road and West 36th Avenue. I am downstairs; sounds from upstairs.","incident":"Man and woman shouting, crashing noises, possible thrown objects.","weapon":"I cannot see them. No weapons mentioned that I heard.","injuries":"Unknown; caller cannot see people upstairs.","physical":"I heard shouting and crashes but have not seen anyone strike the other.","time":"About thirty minutes.","suspect":"I do not know either neighbor well enough for descriptions.","vehicle":"No vehicle information.","plate":"No plates.","direction":"Both voices appear to be inside the upstairs unit.","children":"A young child might live upstairs but I cannot confirm if present now.","substances":"I do not know whether alcohol or drugs are involved.","contact":"Please do not tell them I called; I am in the downstairs unit."}}];
+const BUILT_IN_UPDATE_FACTS = {"01": {"direction": "He is getting into his black Silverado and moving toward Bragaw. I cannot tell if he has left the area yet.", "vehicle": "His black Silverado pickup, with the dent in the passenger door, is the vehicle he is entering."}, "02": {"direction": "He is across Spenard Road now, looking back toward us.", "weapon": "Yes, he is still holding the aluminum bat."}, "03": {"physical": "Now they are shoving each other. One just pushed the other guy into a parked car.", "injuries": "I do not see anybody injured right now, but they are pushing each other."}, "04": {"direction": "He turned left from Tudor onto Boniface and is going north toward Northern Lights. I am no longer following.", "contact": "I am not following him anymore."}, "05": {"alarmType": "There was another rear-door alarm signal. We still have no visual confirmation."}, "06": {"alarmType": "There is now motion in the front showroom as well as the earlier zones."}, "07": {"injuries": "The other driver now says her neck hurts, and she is getting dizzy."}, "09": {"direction": "He turned westbound onto DeBarr Road. I lost sight of the Ford Escape after stopping at the light."}, "10": {"alarmType": "A new motion activation came from the front office."}, "11": {"physical": "One of them just punched the other guy in the face. He fell and got back up.", "injuries": "He was knocked to the ground, but he got up right away. I cannot tell if he is hurt."}, "12": {"injuries": "The Chevrolet driver is outside his car now, sitting on the curb and complaining of severe chest pain."}, "13": {"direction": "The attacker is walking back northbound on G Street toward us.", "weapon": "I cannot tell whether he still has the bottle."}, "14": {"keyholder": "The owner thinks her teenager may have stopped by, but she has not been able to verify that."}, "15": {"direction": "He is walking southbound along Boniface Parkway.", "weapon": "He is still carrying the knife."}, "16": {"direction": "The truck turned east onto O’Malley Road and accelerated away. We are not following it."}, "17": {"injuries": "My girlfriend is much dizzier and says she feels like she is going to pass out."}, "18": {"physical": "I heard a loud crash, and the woman yelled “Get away from me.” Now I cannot hear anything.", "injuries": "I cannot see inside or tell if anyone is hurt. After a loud crash, it has gone quiet."}};
+const KEY='anchorage-dispatch-academy-self-study-v2';
+const CODE_NAMES={DISTW:'Disturbance with a weapon',ASLTW:'Assault with a weapon',DIST:'Disturbance',REDDI:'Report every dangerous driver immediately',ACC:'Traffic collision',ALARM:'Burglary alarm'};
+const STUDY={
+ DISTW:{title:'Disturbance with a weapon',summary:'Confirm location, current actions and weapon information before expanding to suspect and vehicle descriptions. Reassess when the subject moves.',essential:['Exact address, unit/building, access and cross streets','What is occurring now; physical vs. verbal','Type of weapon, who has it, where they are','Injuries, children or others in danger','Suspect description, vehicle, direction and time lapse','Caller name, callback, willingness to speak with officers','Changes in threat and location'],pitfall:'Do not assume that seeing a weapon means an injury occurred.',questions:[['Which detail must be established first?',['Exact incident location','Suspect criminal history','Caller employment'],'0','A usable location is essential for response.'],['What changes when the armed subject leaves in a vehicle?',['Nothing','Update direction and vehicle information','Close the event'],'1','The location and nature of the threat are changing.'],['A witness says the suspect has a gun. What needs clarification?',['What kind of handgun, who has it, and current actions','Whether the suspect owns it legally','Caller political opinions'],'0','Ask what is actually observed; do not assume intent or legality.']]},
+ ASLTW:{title:'Assault with a weapon',summary:'Determine current scene, weapon, injury severity and whether the suspect is still nearby. Separate eyewitness observations from assumptions.',essential:['Precise location of victim and suspect','Weapon and how it was used','Injuries, consciousness, bleeding and medical need','Suspect description and whether still armed','Time lapse, direction of travel and vehicle','Caller identification and contact','Relevant updates to victim or suspect status'],pitfall:'A victim who is conscious may still have serious injuries.',questions:[['What is most important after confirming location?',['Whether there are injuries and a weapon','Victim’s occupation','Parking availability'],'0','Injuries and weapons can change urgency and medical needs.'],['Suspect returns to the scene. You should:',['Record and relay the change promptly','Ignore because suspect was already described','End the call'],'0','Current scene information matters.'],['Which wording is safest?',['The caller observed a bottle strike','The suspect definitely intended murder','There was no injury because victim was talking'],'0','Document observations without unsupported conclusions.']]},
+ DIST:{title:'Disturbance',summary:'Clarify the conduct: verbal argument, physical fighting, threats, property damage, weapons and injuries. Consider domestic/child context.',essential:['Exact location and unit/parking area','What the people are doing right now','Physical versus verbal and injuries','Weapons, threats and current safety concerns','Descriptions, number of subjects, vehicles and direction','Children, alcohol/drugs when relevant','Caller information and changed circumstances'],pitfall:'A verbal argument can turn physical during the call.',questions:[['Two people are yelling. Which follow-up is most important?',['Are they physical or armed?','Are they coworkers?','What music is playing?'],'0','Establish immediate safety and conduct.'],['A new report of punching means:',['Reassess the event and update CAD','Leave the previous description unchanged','Wait to see if caller hangs up'],'0','Changing facts may change event classification and priority.'],['You cannot see inside an apartment. What should you say in CAD?',['Caller heard crashing but did not see an assault','Confirmed assault','Nothing happened'],'0','Distinguish observations from inferences.']]},
+ REDDI:{title:'Dangerous driver',summary:'A moving target requires repeated current location, direction of travel, vehicle description and safe caller conduct.',essential:['Current road, closest intersection and direction','What specific dangerous driving is being observed','Time elapsed and last observed location','Vehicle color, make, model, body style and plate','Driver description if visible','Caller name/phone and own vehicle','Update turns, lost visual, and safety of caller'],pitfall:'Do not instruct the caller to chase or drive unsafely.',questions:[['What is most urgent about a moving REDDI?',['Current location and direction','Driver favorite music','Price of the vehicle'],'0','A moving target makes location perishable information.'],['Caller is driving behind the suspect. Best approach?',['Do not encourage following or unsafe driving','Ask them to speed up','Tell them to photograph the plate while driving'],'0','Caller safety is necessary.'],['Caller is not sure about the plate. Document it as:',['Partial/uncertain plate with known characters','Fully confirmed plate','No vehicle information at all'],'0','Retain useful data and uncertainty.']]},
+ ACC:{title:'Traffic collision',summary:'Establish location, number of vehicles, injuries, hazards, roadway obstruction, and whether the vehicles are driveable.',essential:['Exact intersection, roadway side or landmark','Number of vehicles, positions and blocking lanes','Injuries, consciousness and medical needs','Vehicle descriptions and plates','Driveable vs. disabled; ability to clear roadway safely','Fire, fuel, airbags and other hazards','Caller details and later medical developments'],pitfall:'New pain or dizziness is an important update after an initially non-injury report.',questions:[['What is a key question after crash location?',['Is anyone injured?','Which driver is at fault?','Who owns the road?'],'0','Need to understand medical response needs.'],['When should injury information be updated?',['As soon as a new symptom is reported','Only after a police report','Never'],'0','Initial injury reports can change.'],['Vehicles cannot move out of intersection. Note:',['Road obstruction and vehicle conditions','Assume clear roadway','No need to ask'],'0','Obstruction can affect the response.']]},
+ ALARM:{title:'Burglary alarm',summary:'Capture company callback, alarm account/property, time, zone, audible/reset status and verified contacts. Do not confuse an alarm activation with a confirmed burglary.',essential:['Exact address, property or business name','Monitoring company and callback telephone','Alarm type, zone or area of activation','Audible or silent; reset status','Time of alarm trip and repeated signals','Premises telephone and keyholder status','Whether an actual break-in is verified'],pitfall:'A triggered alarm is not proof that anyone unlawfully entered.',questions:[['Which information is alarm-specific?',['Monitoring company, callback, zone and time','Suspect shoe size','Caller favorite car'],'0','Alarm company and activation information support response.'],['Multiple motion signals mean:',['Document the additional signals without assuming burglary','Burglary is definitely confirmed','Ignore the new activation'],'0','Separate alarm telemetry from visual confirmation.'],['What is the right statement if no camera exists?',['No visual verification available','Suspect seen inside','Alarm definitely false'],'0','State what is known and unknown.']]}
+};
+const RUBRIC={
+ common:[['location','Confirmed incident location',['location'],true],['incident','Clarified what is happening / observed behavior',['details'],true],['callerName','Collected caller identity',['callerName'],false],['callerPhone','Collected callback telephone',['callback'],true],['code','Selected event code',['callType'],true]],
+ DISTW:[['weapon','Weapon information',['safety','details'],true],['injuries','Injuries / medical',['medical','details'],true],['physical','Physical vs. verbal',['details'],false],['suspect','Subject description',['suspect'],false],['vehicle','Vehicle description',['vehicle'],false],['plate','Plate if known',['plate'],false],['direction','Current location / travel',['direction'],true],['children','Children involved',['safety','details'],false],['substances','Alcohol or drugs',['safety','details'],false],['contact','Officer contact preference',['details'],false]],
+ ASLTW:[['weapon','Weapon used',['safety','details'],true],['injuries','Injury status',['medical','details'],true],['physical','Nature of assault',['details'],false],['time','Time since assault',['details'],false],['suspect','Suspect description',['suspect'],true],['direction','Direction of travel',['direction'],false],['vehicle','Suspect vehicle if any',['vehicle'],false],['contact','Officer / caller contact',['details'],false]],
+ DIST:[['physical','Verbal vs. physical',['details'],true],['weapon','Weapons or threats',['safety','details'],true],['injuries','Injuries',['medical','details'],true],['suspect','People / descriptions',['suspect'],false],['time','How long it has gone on',['details'],false],['children','Children involved',['safety','details'],false],['substances','Alcohol or drugs',['safety','details'],false],['vehicle','Vehicle if applicable',['vehicle'],false],['contact','Caller contact preference',['details'],false]],
+ REDDI:[['direction','Current location and direction',['direction'],true],['time','Time lapse',['details'],false],['vehicle','Vehicle description',['vehicle'],true],['plate','License plate / uncertainty',['plate'],true],['suspect','Driver description',['suspect'],false],['contact','Caller vehicle / contact',['details'],false]],
+ ACC:[['injuries','Injuries and symptoms',['medical','details'],true],['vehicle','Vehicle description',['vehicle'],true],['plate','Vehicle plates',['plate'],false],['driveable','Driveability',['details'],false],['roadway','Roadway obstruction',['details'],true],['safety','Other hazards / airbags',['safety','details'],false],['officer','Officer response required',['details'],false]],
+ ALARM:[['company','Monitoring company',['details'],true],['business','Premises / owner identification',['details'],false],['alarmType','Alarm zone / type',['details'],true],['audible','Audible or silent',['details'],false],['reset','Reset status',['details'],false],['trip','Time of activation',['details'],true],['premises','Premises phone',['details'],false],['keyholder','Keyholder / authorized access',['details'],false]]
+};
+const ALL_FIELDS=['location','cross','callType','priority','callerName','callback','suspect','vehicle','plate','direction','medical','safety','details','updates'];
+const $=q=>document.querySelector(q); const esc=s=>String(s??'').replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));
+const norm=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+const dateFmt=s=>{try{return new Date(s).toLocaleString(undefined,{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'})}catch(e){return '—'}};
+const shortDate=s=>{try{return new Date(s).toLocaleDateString()}catch(e){return '—'}};
+const emptyCad=()=>Object.fromEntries(ALL_FIELDS.map(f=>[f,'']));
+let store={history:[],custom:[],draft:null,studyProgress:{}};
+try{const v=JSON.parse(localStorage.getItem(KEY)||'null');if(v&&typeof v==='object'){store={...store,...v};}}catch(e){}
+let page='home',selectedTopic='DISTW',quizPos=0,quizAnswered=null,quizPoints=0,mode='guided',chosenCode='random',chosenVariant='any',practice=null,lastReview=null,voiceOn=store.preferences?.callerAudio!==false,recognition=null,secondsTicker=null,showBankAnswers=false;
+let speakingNow=false,micListening=false,voiceSequence=0,lastTick=Date.now(),saveTimer=null,callVoice={key:'',name:''};
+const SpeechRecognitionAPI=window.SpeechRecognition||window.webkitSpeechRecognition;
+let storageOK=true;
+try{const k='__dispatch_storage_test__';localStorage.setItem(k,'1');localStorage.removeItem(k)}catch(e){storageOK=false;}
+function save(){clearTimeout(saveTimer);store.draft=practice;try{localStorage.setItem(KEY,JSON.stringify(store))}catch(e){if(storageOK&&document.getElementById('toast'))toast('Could not save to this browser. Use History → Backup JSON to keep your results.');storageOK=false;}}
+function saveSoon(){clearTimeout(saveTimer);saveTimer=setTimeout(save,400);}
+function allScenarios(){return [...BUILT_IN,...(store.custom||[])];}
+function toast(s){const el=$('#toast');el.textContent=s;el.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>el.classList.remove('show'),3800)}
+function navigate(p){page=p;for(const el of document.querySelectorAll('.panel'))el.classList.toggle('active',el.id===p);for(const el of document.querySelectorAll('[data-nav]')){el.classList.toggle('active',el.dataset.nav===p);if(el.classList.contains('active'))el.setAttribute('aria-current','page');else el.removeAttribute('aria-current')}renderPage();document.body.classList.toggle('in-call',!!practice && page==='practice');if(page!=='practice'&&speakingNow&&'speechSynthesis' in window){voiceSequence++;speechSynthesis.cancel();speakingNow=false;}mobileScrollToTop();if(!storageOK&&p==='home'&&!$('#storageWarning'))$('#home').insertAdjacentHTML('afterbegin','<div class="callout warn" id="storageWarning" style="margin-bottom:16px">This browser is blocking local storage. Training still works, but history may not survive closing the page. Use Backup JSON after each session.</div>');}
+function navSetup(){const arr=[['home','Home','Home'],['study','Study guide','Study'],['practice','Calls','Calls'],['history','History','History'],['bank','Scenarios','Scenarios']];for(const x of ['#navDesktop','#navMobile'])$(x).innerHTML=arr.map(([id,t,short])=>`<button type="button" data-nav="${id}" onclick="navigate('${id}')"><span class="icon">${ICONS[id]}</span><span>${x==='#navMobile'?short:t}</span></button>`).join('');}
+function renderPage(){({home:renderHome,study:renderStudy,practice:renderPractice,history:renderHistory,bank:renderBank,review:renderReview}[page]||renderHome)();}
+function quickStart(m){mode=own(MODE_NAMES,m)?m:'guided';chosenCode='random';chosenVariant='any';navigate('practice');if(!practice)startCall();}
+function studyTopic(c){if(own(STUDY,c)){selectedTopic=c;quizPos=0;quizAnswered=null;quizPoints=0;}navigate('study');}
+function practiceType(c){mode='guided';chosenCode=own(CODE_NAMES,c)?c:'random';chosenVariant='any';navigate('practice');}
+function codeStats(){const m={};for(const r of store.history||[]){if(!own(CODE_NAMES,r.code))continue;if(!m[r.code])m[r.code]={n:0,sum:0};m[r.code].n++;m[r.code].sum+=Number(r.score)||0;}return Object.entries(m).map(([code,v])=>({code,n:v.n,avg:Math.round(v.sum/v.n)})).sort((a,b)=>a.avg-b.avg);}
+function renderHome(){
+ const hist=store.history||[],avg=hist.length?Math.round(hist.reduce((a,r)=>a+(Number(r.score)||0),0)/hist.length):null;
+ const recent=hist.slice(0,10).reverse(),stats=codeStats(),weak=stats.length>1?stats[0]:null;
+ const hero=practice
+  ?`<section class="hero"><div class="hero-status"><span class="ring-dot"></span>Call on hold</div><h1>You have an unfinished call</h1><p>${esc(MODE_NAMES[practice.mode]||'Practice')} call, ${asClock(elapsed())} on the clock. Your CAD entry is saved.</p><div class="actions"><button class="btn light lg" onclick="navigate('practice')">Resume call</button></div></section>`
+  :`<section class="hero"><div class="hero-status"><span class="ring-dot"></span>Training line ready</div><h1>Take a practice 911 call</h1><p>A scripted caller reports an incident. You ask the questions and write the CAD entry. The review shows what you missed.</p><div class="actions"><button class="btn light lg" onclick="quickStart('guided')">Answer a guided call</button><button class="btn onnavy lg" onclick="quickStart('exam')">Take a blind practical</button></div></section>`;
+ const progress=hist.length
+  ?`<div class="statrow"><div class="stat"><strong>${hist.length}</strong><span>${hist.length===1?'call':'calls'} completed</span></div><div class="stat"><strong>${avg}%</strong><span>average score</span></div><div class="stat grow"><div class="spark" role="img" aria-label="Scores for your last ${plural(recent.length,'call')}">${recent.map(r=>{const n=Math.max(0,Math.min(100,Number(r.score)||0));return `<i class="${scoreClass(n)}" style="height:${Math.max(6,n)}%" title="${n}%"></i>`}).join('')}</div><span>Last ${plural(recent.length,'call')}, oldest first</span></div></div>${weak?`<p class="nextup">Your lowest average is <b>${weak.code}</b> (${esc(CODE_NAMES[weak.code])}) at ${weak.avg}% over ${plural(weak.n,'call')}. <button class="linkbtn" onclick="practiceType('${weak.code}')">Practice this type</button></p>`:''}`
+  :`<p class="muted">No calls yet. Your scores appear here after your first review.</p>`;
+ $('#home').innerHTML=`${hero}
+<section class="card"><div class="sectionhead"><h2>Your progress</h2>${hist.length?`<button class="btn sm" onclick="navigate('history')">See all calls</button>`:''}</div>${progress}</section>
+<section class="card"><div class="sectionhead"><h2>How training works</h2></div><ol class="steps"><li><h3>Study the call type</h3><p>Read what to collect for each of the six call types, then take a three-question quiz.</p><button class="btn sm" onclick="navigate('study')">Open study guide</button></li><li><h3>Practice with a checklist</h3><p>Interview the caller with a checklist on screen. Choose the call type and scenario.</p><button class="btn sm" onclick="mode='guided';navigate('practice')">Set up a guided call</button></li><li><h3>Test yourself blind</h3><p>Take a random call with no hints. The caller reports a change partway through.</p><button class="btn sm" onclick="mode='exam';navigate('practice')">Set up a blind practical</button></li></ol></section>
+<div class="callout">The caller speaks each answer when audio is on. Ask by typing, by keyboard dictation, or by microphone where the browser supports it. The caller follows a script and does not improvise.</div>
+${!storageOK?'<div class="callout warn">This browser is not saving data. Export a backup from History before you close the page.</div>':''}`;}
+function renderStudy(){
+ const x=STUDY[selectedTopic],q=x.questions[quizPos];
+ const tabs=Object.keys(STUDY).map(c=>{const p=store.studyProgress?.[c],pct=p&&p.attempts>0?Math.round(p.correct/p.attempts*100):null;return `<button class="${c===selectedTopic?'active':''}" ${c===selectedTopic?'aria-current="true"':''} onclick="selectTopic('${c}')"><b>${c}</b><span>${esc(STUDY[c].title)}${pct===null||isNaN(pct)?'':', quiz '+pct+'%'}</span></button>`}).join('');
+ const options=q[1].map((s,i)=>`<button class="quizopt ${quizAnswered===null?'':i===Number(q[2])?'correct':quizAnswered===i?'wrong':''}" ${quizAnswered!==null?'disabled':''} onclick="answerQuiz(${i})">${String.fromCharCode(65+i)}. ${esc(s)}</button>`).join('');
+ $('#study').innerHTML=`<div class="intro"><h1>Study guide</h1><p>What to collect for each call type, with a short quiz. Reference notes are based on the supplied evaluation sheets and APD's public call-taking guidance.</p></div>
+<div class="topic-grid"><div class="topic-list">${tabs}</div><div>
+<div class="card"><h2><span class="codechip">${selectedTopic}</span> ${esc(x.title)}</h2><p style="margin-top:10px">${esc(x.summary)}</p><div class="dividerTitle">Information to collect</div><ul class="bullets">${x.essential.map(t=>`<li>${esc(t)}</li>`).join('')}</ul><div class="callout warn"><b>Common error:</b> ${esc(x.pitfall)}</div><div class="actions" style="margin-top:18px"><button class="btn primary" onclick="practiceType('${selectedTopic}')">Practice a ${selectedTopic} call</button></div></div>
+<div class="card"><div class="sectionhead"><h3>Quiz question ${quizPos+1} of ${x.questions.length}</h3><span class="pill">${quizPoints} correct</span></div><p><b>${esc(q[0])}</b></p>${options}${quizAnswered!==null?`<div class="callout">${esc(q[3])}</div><div class="actions" style="margin-top:14px"><button class="btn primary" onclick="nextQuiz()">${quizPos===x.questions.length-1?'Restart quiz':'Next question'}</button></div>`:''}</div>
+</div></div>`;}
+function selectTopic(c){selectedTopic=c;quizPos=0;quizAnswered=null;quizPoints=0;renderStudy();}
+function answerQuiz(i){if(quizAnswered!==null)return;quizAnswered=i;if(i===Number(STUDY[selectedTopic].questions[quizPos][2]))quizPoints++;const p=store.studyProgress[selectedTopic]||{attempts:0,correct:0};p.attempts++;if(i===Number(STUDY[selectedTopic].questions[quizPos][2]))p.correct++;store.studyProgress[selectedTopic]=p;save();renderStudy();}
+function nextQuiz(){quizPos=(quizPos+1)%STUDY[selectedTopic].questions.length;if(quizPos===0)quizPoints=0;quizAnswered=null;renderStudy();}
+function setMode(m){mode=own(MODE_NAMES,m)?m:'guided';renderPractice();}
+function renderPractice(){if(practice){renderActive();return;}if(mode==='exam'){chosenCode='random';chosenVariant='any';}
+ const arr=allScenarios(),list=chosenCode==='random'?arr:arr.filter(s=>s.code===chosenCode),exam=mode==='exam';
+ const codeOptions=['random','DISTW','ASLTW','DIST','REDDI','ACC','ALARM'].map(c=>`<option value="${c}" ${chosenCode===c?'selected':''}>${c==='random'?'Any call type':c+' — '+CODE_NAMES[c]}</option>`).join('');
+ const variantOptions=`<option value="any" ${chosenVariant==='any'?'selected':''}>Random scenario</option>`+(exam?'':list.map(s=>`<option value="${esc(s.id)}" ${chosenVariant===s.id?'selected':''}>Call ${esc(s.id)} — ${esc(s.variant)}</option>`).join(''));
+ $('#practice').innerHTML=`<div class="intro"><h1>Set up a call</h1><p>Choose how much help you want. The simulator plays the caller. You ask the questions and write the CAD entry.</p></div>
+<div class="card"><h2 id="modeLabel">Practice mode</h2>
+<div class="modes" role="radiogroup" aria-labelledby="modeLabel">${Object.keys(MODE_NAMES).map(m=>`<button type="button" role="radio" aria-checked="${mode===m}" class="mode ${mode===m?'sel':''}" onclick="setMode('${m}')"><b>${MODE_NAMES[m]}</b><span>${MODE_DESC[m]}</span></button>`).join('')}</div>
+<div class="fieldset two" style="margin-top:20px"><div class="field"><label for="chosenCode">Call type</label><select id="chosenCode" ${exam?'disabled':''} onchange="chosenCode=this.value;chosenVariant='any';renderPractice()">${codeOptions}</select></div><div class="field"><label for="chosenVariant">Scenario</label><select id="chosenVariant" ${exam?'disabled':''} onchange="chosenVariant=this.value">${variantOptions}</select></div></div>
+${exam?'<p class="small" style="margin-top:8px">A blind practical always uses a random call.</p>':''}
+<label class="switch"><input type="checkbox" ${voiceOn?'checked':''} onchange="setCallerAudio(this.checked)"><span class="track"></span><span><b>Caller audio</b><small>The caller speaks each answer. Microphone questions depend on your browser and its permission settings.</small></span></label>
+<div class="actions" style="margin-top:22px"><button class="btn primary lg" onclick="startCall()">Answer call</button><span class="small">${plural(list.length,'scenario')} in this selection. Recent calls are skipped when possible.</span></div></div>
+<p class="small" style="margin-top:14px;max-width:80ch">All incidents are fictional training examples. Numbered addresses are not verified. Learn priority codes from academy materials.</p>`;}
+function chosenScenario(){let arr=allScenarios().filter(s=>chosenCode==='random'||s.code===chosenCode);if(chosenVariant!=='any'){const found=arr.find(s=>s.id===chosenVariant);if(found)return found}let recent=store.history.slice(0,4).map(x=>x.scenarioId),pool=arr.filter(s=>!recent.includes(s.id));if(!pool.length)pool=arr;return pool[Math.floor(Math.random()*pool.length)];}
+function startCall(){if(practice)return;let sc=chosenScenario();if(!sc){toast('No scenario available.');return;}practicePane='caller';if('speechSynthesis' in window){voiceSequence++;speechSynthesis.cancel()}practice={id:sc.id,mode:mode,chosen:chosenCode,started:new Date().toISOString(),messages:[{role:'caller',text:sc.opening}],asked:[],cad:emptyCad(),updateGiven:false,questions:0,captionsHidden:voiceOn&&mode!=='guided',voiceQuestions:0,locQ:0,activeMs:0};lastTick=Date.now();save();renderActive();speak(sc.opening);}
+function scenario(){return allScenarios().find(s=>s.id===practice?.id);}
+function elapsed(){return practice?Math.floor((practice.activeMs||0)/1000):0;} // counts only time spent on the call screen
+function asClock(n){return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0');}
+function hintsHTML(s){return rubricFor(s).filter(x=>x[0]!=='code').map(([key,label])=>{const done=practice.asked.includes(key);return `<button type="button" class="hint ${done?'asked':''}" onclick="useSample('${key}')">${done?'✓ ':''}${esc(label)}</button>`}).join('');}
+function useSample(key){const q=SAMPLE_Q[key];if(!q||!practice)return;const onCad=practicePane==='cad'&&window.matchMedia('(max-width:920px)').matches;const el=onCad?$('#cadQuestion'):$('#question');if(!el)return;el.value=q;el.focus();}
+function renderActive(){document.body.classList.toggle('in-call',!!practice&&page==='practice');const s=scenario();if(!s){practice=null;save();renderPractice();return;}
+ const hideType=practice.mode==='exam',F=(key,cls,control)=>`<div class="field ${cls}"><label>${CAD_LABELS[key]}</label>${control}</div>`;
+ $('#practice').innerHTML=`<div class="callbar"><div><span class="small">${esc(MODE_NAMES[practice.mode]||'Practice')}</span><h2>${hideType?'Unknown call type':`<span class="codechip">${esc(s.code)}</span> ${esc(CODE_NAMES[s.code]||'')}`}</h2></div>
+<div class="actions"><span class="timer" id="timer" aria-label="Call time">${asClock(elapsed())}</span><button class="btn sm" onclick="toggleVoice()" id="voiceToggle" aria-pressed="${voiceOn}">${voiceOn?'Audio on':'Audio off'}</button><button class="btn sm" onclick="triggerUpdate()" ${practice.updateGiven?'disabled':''} title="Make the caller report the scripted change now">Caller update</button><button class="btn sm ghost danger" onclick="discardCall()">Discard</button><button class="btn primary" onclick="endCall()">End call and review</button></div></div>
+<div class="call-tabs" role="tablist" aria-label="Call workspace"><button type="button" class="call-tab ${practicePane==='caller'?'active':''}" role="tab" aria-selected="${practicePane==='caller'}" data-pane="caller" onclick="setPracticePane('caller')">Caller <span class="tab-count">${practice.messages.filter(m=>m.role==='caller'||m.role==='update').length}</span></button><button type="button" class="call-tab ${practicePane==='cad'?'active':''}" role="tab" aria-selected="${practicePane==='cad'}" data-pane="cad" onclick="setPracticePane('cad')">CAD entry <span class="tab-count">${Object.values(practice.cad).filter(v=>String(v).trim()).length}</span></button></div>
+<div class="simgrid" data-pane="${practicePane}">
+<section class="card phone" aria-label="Caller"><div class="phonehead"><h3>911 training line</h3><div class="connection"><span class="connection-dot"></span>Connected</div></div>
+<div class="call-audio-tools"><span class="call-audio-status" data-call-status role="status" aria-live="polite"><span class="pulse"></span><span data-status-text>Caller line active</span></span><button class="btn sm" type="button" onclick="speakLast()">Replay audio</button><button class="btn sm caption-toggle" type="button" id="captionToggle" onclick="toggleCaptions()">${practice.captionsHidden?'Show transcript':'Hide transcript'}</button></div>
+<div id="transcript" class="transcript" role="log" aria-label="Call transcript" ${practice.captionsHidden?'hidden aria-hidden="true"':''}></div>
+<div class="audio-caption-hidden" id="captionsHidden" ${practice.captionsHidden?'':'hidden'}><div class="caption-note"><strong>Listen to the caller.</strong>The transcript is hidden for audio practice. Use Replay audio to hear the last answer again.</div></div>
+<div class="compose"><label for="question">Your question</label><textarea id="question" enterkeyhint="send" autocomplete="off" autocapitalize="sentences" spellcheck="true" rows="2" placeholder="Ask the caller one question" onkeydown="if(event.key==='Enter'&&!event.shiftKey&&!event.isComposing){event.preventDefault();sendQuestion();}"></textarea>
+<div class="actions"><button class="btn primary" onclick="sendQuestion()">Ask caller</button><button class="btn" onclick="startMic()" id="micBtn">Use microphone</button></div>
+<div class="subnote">Press Enter to send. Ask one question at a time.</div>
+${practice.mode==='guided'?`<div class="guide"><h4>What to ask</h4><p class="small">Tap an item for a sample question. A check mark means the caller answered it.</p><div class="hintlist">${hintsHTML(s)}</div></div>`:''}</div></section>
+<section class="card cad" aria-label="CAD entry"><div class="cad-voice-quick"><h4>Ask from here</h4><div class="inline-question-row"><input type="text" id="cadQuestion" aria-label="Question for the caller" placeholder="Question for the caller" autocomplete="off" enterkeyhint="send" onkeydown="if(event.key==='Enter'&&!event.isComposing){event.preventDefault();sendQuestionFromCad();}"><button type="button" class="btn primary" onclick="sendQuestionFromCad()">Ask</button><button type="button" class="btn" onclick="startMic()" aria-label="Use microphone">Mic</button></div><div class="call-audio-status" data-call-status style="margin-top:8px"><span class="pulse"></span><span data-status-text>Caller line active</span></div></div>
+<div class="sectionhead"><h3>CAD entry</h3><button class="btn sm ghost" onclick="printPractice()">Print</button></div>
+<div class="fieldset two">${F('location','full','<input data-cad="location" placeholder="Address or intersection">')}${F('cross','','<input data-cad="cross" placeholder="Building, unit, cross street">')}${F('callType','',`<input data-cad="callType" autocapitalize="characters" spellcheck="false" list="eventCodes" placeholder="DIST, ACC"><datalist id="eventCodes">${Object.keys(CODE_NAMES).map(c=>`<option value="${c}">`).join('')}</datalist>`)}${F('priority','','<input data-cad="priority" placeholder="Academy code, if known">')}${F('callerName','','<input data-cad="callerName" placeholder="Name">')}${F('callback','','<input data-cad="callback" placeholder="Phone number" type="tel" inputmode="tel" autocomplete="off">')}</div>
+<div class="dividerTitle">Subjects and vehicles</div>
+<div class="fieldset two">${F('suspect','full','<input data-cad="suspect" placeholder="Name and description">')}${F('vehicle','','<input data-cad="vehicle" placeholder="Color, make, model">')}${F('plate','','<input data-cad="plate" placeholder="Full or partial plate" autocapitalize="characters" spellcheck="false">')}${F('direction','full','<input data-cad="direction" placeholder="Direction of travel, last location">')}</div>
+<div class="dividerTitle">Incident and safety</div>
+<div class="fieldset">${F('medical','smallarea','<textarea data-cad="medical" placeholder="Injuries, consciousness, medical response"></textarea>')}${F('safety','smallarea','<textarea data-cad="safety" placeholder="Weapons, threats, fire, impairment, children"></textarea>')}${F('details','','<textarea data-cad="details" placeholder="What happened, timeline, descriptions, caller wishes"></textarea>')}${F('updates','smallarea','<textarea data-cad="updates" placeholder="Changes reported during the call"></textarea>')}</div>
+<div class="subnote">Your entry saves in this browser as you type.</div><div class="mobile-usage-tip">Switch between Caller and CAD entry with the tabs. Your notes stay in place.</div></section></div>`;
+ $('#transcript').innerHTML=practice.messages.map(m=>messageHTML(m)).join('');$('#transcript').scrollTop=$('#transcript').scrollHeight;
+ setAudioStatus(micListening?'Listening — ask one question':speakingNow?'Caller is speaking…':'Caller line active',micListening?'listening':speakingNow?'speaking':'ready');
+ for(const e of document.querySelectorAll('[data-cad]')){e.id='cad-'+e.dataset.cad;const associatedLabel=e.parentElement.querySelector('label');if(associatedLabel)associatedLabel.htmlFor=e.id;e.value=practice.cad[e.dataset.cad]||'';e.addEventListener('input',()=>{practice.cad[e.dataset.cad]=e.value;saveSoon();const counter=$('#practice .call-tab[data-pane="cad"] .tab-count');if(counter)counter.textContent=Object.values(practice.cad).filter(v=>String(v).trim()).length});}
+ if(!window.matchMedia('(max-width:1024px)').matches)$('#question').focus({preventScroll:true});}
+function messageHTML(m){return `<div class="msg ${m.role==='operator'?'operator':m.role==='update'?'update':''}"><div class="who">${m.role==='operator'?'Dispatcher':m.role==='update'?'Caller update':'Caller'}</div><div class="bubble">${esc(m.text)}</div></div>`;}
+function appendMessage(role,value){if(!practice)return;practice.messages.push({role,text:value});save();if($('#transcript')){$('#transcript').insertAdjacentHTML('beforeend',messageHTML({role,text:value}));$('#transcript').scrollTop=$('#transcript').scrollHeight;}const counter=$('#practice .call-tab[data-pane="caller"] .tab-count');if(counter)counter.textContent=practice.messages.filter(m=>m.role==='caller'||m.role==='update').length;if(role!=='operator')speak(value);}
+function inferIntents(text,s){const q=norm(text), out=[];const f=s.facts||{};const m=(r)=>r.test(q);function hit(k,re){if(m(re))out.push(k)}
+// More specific expressions first; broad questions may obtain two answers.
+hit('plate',/\b(license|licence|plate|tag|registration|reg number)\b/);
+hit('direction',/\b(direction|heading|travel|last seen|where (did|is) (he|she|they|it|the subject|the suspect|the person|the driver)|which way|northbound|southbound|eastbound|westbound|turn(ed|ing)?|left toward|right toward|where (are|is) (they|the subject|the driver)|is (he|she|it|the driver|the suspect) still (there|around|on scene)|where (are|is) (you|your car) now|are (they|he|she|the suspects?) still (there|on scene|at the location|in the parking lot))\b/);
+hit('callerPhone',/\b(your (phone|number|callback)|phone number|call ?back|reach you|number to reach|best number|what number)\b/);
+hit('callerName',/\b(your name|name of caller|may i ask who is calling|who am i speaking|who am i talking|spell your|may i have your name|who is calling|who s calling|who are you)\b/);
+hit('company',/\b(alarm company|monitoring company|security company|company name|which company|what company)\b/);
+hit('business',/\b(business name|property owner|owner s name|who owns|which business|what business|premises name|customer name|account name|homeowner)\b/);
+hit('premises',/\b(premises (phone|number|line)|phone at (the|that) (house|business|residence)|house (phone|number)|business (phone|number))\b/);
+hit('alarmType',/\b(which zone|alarm zone|what zone|type of alarm|which (door|sensor|detector)|alarm type|what triggered|what tripped|what set it off|which area|what area|motion detector|contact alarm|what (door|zone|sensor|detector) (was|is|went)|which alarm tripped)\b/);
+hit('audible',/\b(audible|siren|silent|does it sound|making noise)\b/);
+hit('reset',/\b(reset|alarm (clear|cleared)|still active|still going off|still sounding|restored?)\b/);
+hit('trip',/\b(trip time|tripped|activated|activation time|what time (did|was) (the alarm|it)|when did (the alarm|it) (go off|activate))\b/);
+hit('keyholder',/\b(keyholder|contacted owner|did you (call|contact|reach|notify) (the )?(owner|homeowner|keyholder|business|premises|property)|authorized|should be there|verified|camera|video|someone inside|someone on scene|anyone supposed)\b/);
+hit('driveable',/\b(driveable|drivable|operable|still drive|able to drive|be driven|can (it|they|you|the (cars?|vehicles?|trucks?)) (still )?(drive|move|be moved)|move (the|both|your|those) (vehicles?|cars?|trucks?)|disabled|towed|tow truck|will (it|they) (move|drive|start))\b/);
+hit('roadway',/\b(block|blocked|blocking|roadway|traffic|lanes?|(in|out of|clear of) the intersection|in the road|off the road|impassable)\b/);
+hit('officer',/\b(need (an|a) officer|want an officer|respond|police needed|police response|are (they|you) needed)\b/);
+hit('children',/\b(child|children|kids|kid|baby|infant|juvenile)\b/);
+hit('substances',/\b(alcohol|drink|drinks|drinking|drank|drunk|intoxicated|drug|high|impaired|sober|under the influence)\b/);
+hit('injuries',/\b(injur(?:y|ies|ed)?|hurt|bleed|bleeding|medical|ambulance|conscious|breath|pain|wound|head injury|dizzy|(is|are) (he|she|they|you|everyone|everybody|anyone|anybody|the driver|the victim|the other driver) (okay|ok|alright|all right))\b/);
+hit('weapon',/\b(weapons?|gun|firearm|knife|pistol|rifle|bat|armed|object in hand|carrying anything)\b/);
+hit('physical',/\b(physical|verbal|fighting|fight|arguing|hitting|punch|push|assault|threatening|threats?|threaten|just talking|yelling|physical contact)\b/);
+hit('time',/\b(how long|when did|how many minutes|how long ago|what time did it happen|time lapse|when (was|did) (this|it)|ago)\b/);
+hit('suspect',/\b(suspect|describe (him|her|them|the person|the man|the woman|the driver|the subject)|what (does|did) (he|she|they|the driver) look|what (is|are|was) (he|she|they|the driver|the suspect) wearing|clothing|clothes|wearing|height|weight|build|race|age|hair|who (is|was) (he|she|the man|the guy)|what (is|s) (his|her|their) name|do you know (his|her|their) name|driver description|how old)\b/);
+hit('vehicle',/\b(vehicles?|trucks?|cars?|suv|pickup|sedan|make|model|body style|kind of vehicle|what was (he|she) driving|description of (the|his|her) (car|truck|vehicle))\b/);
+if(m(/\b(color|colour)\b/))out.push(m(/\b(jacket|shirt|hoodie|sweatshirt|pants|jeans|hat|cap|coat|shoes|boots|clothes|clothing|wearing|hair)\b/)?'suspect':'vehicle');
+hit('contact',/\b(stand by|meet (the|an) officer|want (to|an) (speak|contact)|will you stay|can we contact|where will you be|willing to talk|safely remain|want officer contact|want officers? to contact|caller want officer contact|contact from officers?)\b/);
+hit('cross',/\b(cross street|nearest intersection|which building|which apartment|apartment number|unit number|landmark|how to find|what part of (the|that) (building|parking lot)|entrance)\b/);
+hit('location',/\b(address|where are you|where are you calling from|where did (it|this) (happen|occur)|what is (the|your) location|where is the (car|vehicle|truck|incident)|exact location|where is (this|the emergency)|which street|what street|what intersection|where s the emergency|location of emergency)\b/);
+hit('incident',/\b(what (happened|s happening|is happening|is going on|are they doing)|tell me what|what s going on|what did you see|what is the problem|what s the problem|describe what happened|why are you calling|what s the emergency|how did it happen)\b/);
+hit('safety',/\b(fire|smoke|fuel|hazard|airbag|safe|gas leak|leaking|locked door)\b/);
+if(!out.length&&m(/\b(where|address|intersection|cross)\b/))out.push('location');
+if(!out.length&&m(/\b(name)\b/))out.push('callerName');
+if(!out.length&&m(/\b(number|phone)\b/))out.push(s.code==='ALARM'?'company':'callerPhone');
+if(!out.length&&m(/\b(description|look like|what (kind|type))\b/))out.push(s.code==='REDDI'||s.code==='ACC'?'vehicle':'suspect');
+if(!out.length&&m(/\b(what happened|details|explain)\b/))out.push('incident');
+// Strip inaccessible keys and prioritize specific matches.
+let unique=[...new Set(out)];
+if(unique.includes('plate')) unique=unique.filter(k=>k!=='vehicle');
+if(unique.includes('callerPhone'))unique=unique.filter(k=>k!=='company');
+if(unique.includes('direction'))unique=unique.filter(k=>k!=='location');
+if(unique.includes('alarmType'))unique=unique.filter(k=>k!=='incident');
+// A vehicle word inside a direction, roadway or driveability question is not a request for a vehicle description.
+if(unique.some(k=>['direction','roadway','driveable'].includes(k))&&!m(/\b(describe|description|what kind|what type|make|model|color|colour|what (car|vehicle|truck)|which (car|vehicle|truck))\b/))unique=unique.filter(k=>k!=='vehicle');
+// Keep only what this scenario can answer or is scored on; otherwise allow one generic "don't know" reply.
+const upd=s.updateFacts||BUILT_IN_UPDATE_FACTS[s.id]||{},rubricKeys=rubricFor(s).map(x=>x[0]);
+const answerable=k=>['location','callerName','callerPhone'].includes(k)||f[k]!==undefined||upd[k]!==undefined||rubricKeys.includes(k);
+const kept=unique.filter(answerable);
+unique=kept.length?kept:unique.filter(k=>GENERIC_REPLY_KEYS.includes(k)).slice(0,1);
+return unique.slice(0,3);
+}
+function replyFor(key,s){const f=s.facts||{};const updated=(s.updateFacts||BUILT_IN_UPDATE_FACTS[s.id]||{});if(practice?.updateGiven&&Object.prototype.hasOwnProperty.call(updated,key))return updated[key];
+if(key==='location')return s.location.replace(/ \(fictional[^)]*\)/i,'');
+if(key==='callerName')return "My name is "+s.caller+'.';
+if(key==='callerPhone')return 'You can reach me at '+s.phone+'.';
+if(key==='company'&&s.code==='ALARM')return (f.company||'The alarm company')+' Our callback is '+s.phone+'.';
+const v=f[key];if(v===undefined){const unknown={suspect:"I didn't get a description of anyone.",vehicle:"I haven't seen a vehicle connected to this.",plate:"No, I don't have a license plate.",direction:s.code==='ACC'?"Both cars are still here at the intersection.":"I don't know of anyone leaving the area.",children:"I'm not sure whether any children are there.",weapon:"I haven't seen a weapon or heard one mentioned.",injuries:"I don't know of anyone being injured.",substances:"I don't know if alcohol or drugs are involved.",time:"I don't know the exact time.",safety:s.code==='ALARM'?"I am at the monitoring center, not at the property.":"I'm okay where I am right now."};return unknown[key]||"I'm sorry, I don't know that.";}
+return v;
+}
+function sendQuestionFromCad(){const x=$('#cadQuestion');if(!x)return;const value=x.value.trim();if(!value)return;x.value='';sendQuestion(value);}
+function sendQuestion(explicitQuestion){if(!practice)return;const input=$('#question');const question=(typeof explicitQuestion==='string'?explicitQuestion:(input?.value||'')).trim();if(!question)return;if(input)input.value='';appendMessage('operator',question);const s=scenario();const keys=inferIntents(question,s);practice.questions++;if(!practice.locQ&&(keys.includes('location')||keys.includes('cross')||(s.code==='REDDI'&&keys.includes('direction'))))practice.locQ=practice.questions;
+let answer='';if(!keys.length)answer=["I'm not sure what you're asking. Can you say that another way?","I don't know. What else do you need?","I'm trying to help. Could you ask me more specifically?"][practice.questions%3];
+else {answer=keys.map(k=>{if(!practice.asked.includes(k))practice.asked.push(k);return replyFor(k,s)}).join(' ');}
+appendMessage('caller',answer);save();if(practice.mode==='guided')renderHints();if(!window.matchMedia('(max-width:1024px)').matches)$('#question')?.focus();if(elapsed()>=65&&!practice.updateGiven&&practice.questions>=3)triggerUpdate();}
+function renderHints(){if(practice?.mode!=='guided')return;const d=$('#practice .hintlist');if(d)d.innerHTML=hintsHTML(scenario());}
+function triggerUpdate(){if(!practice||practice.updateGiven)return;practice.updateGiven=true;appendMessage('update',scenario().development);if($('#practice button[onclick="triggerUpdate()"]'))$('#practice button[onclick="triggerUpdate()"]')?.setAttribute('disabled','');toast('The caller reported a change. Record it in Updates. Tap Replay audio if you did not hear it.');save();}
+function setAudioStatus(label,kind='ready'){
+ const text=label||(micListening?'Listening for your question…':speakingNow?'Caller is speaking…':'Caller line active');
+ for(const el of document.querySelectorAll('[data-call-status]')){
+  el.classList.toggle('speaking',kind==='speaking');el.classList.toggle('listening',kind==='listening');
+  const t=el.querySelector('[data-status-text]');if(t)t.textContent=text;
+ }
+}
+function setCallerAudio(v){
+ voiceOn=!!v&&('speechSynthesis' in window);
+ store.preferences={...(store.preferences||{}),callerAudio:voiceOn};save();
+ const b=$('#voiceToggle');if(b){b.textContent=voiceOn?'Audio on':'Audio off';b.setAttribute('aria-pressed',String(voiceOn));}
+ if(!voiceOn){try{window.speechSynthesis?.cancel()}catch(e){}speakingNow=false;if(practice&&practice.captionsHidden)toggleCaptions(true);}
+ setAudioStatus(voiceOn?'Caller audio enabled':'Caller audio off', 'ready');
+}
+function toggleVoice(){setCallerAudio(!voiceOn);if(voiceOn&&practice)speakLast();else toast(voiceOn?'Caller audio enabled.':'Caller audio muted.');}
+const FEMALE_NAMES=new Set('amanda rebecca melissa emily jennifer patricia olivia laura susan mary sarah jessica linda karen lisa nancy anna maria jane'.split(' ')),MALE_NAMES=new Set('chris matt tyler kevin brandon anthony michael thomas jason david john james robert william mark paul steven ryan daniel'.split(' '));
+const FEMALE_VOICE=/female|samantha|victoria|karen|moira|tessa|allison|ava|susan|zira|jenny|aria|michelle|nicky|joanna|kendra|kimberly|salli|ivy/i,MALE_VOICE=/\bmale\b|alex|daniel|david|mark|fred|\btom\b|aaron|\bguy\b|matthew|joey|justin|evan|nathan|reed|rocko|eddy/i;
+function pickCallerVoice(){
+ if(!('speechSynthesis' in window))return null;
+ const all=window.speechSynthesis.getVoices();
+ let voices=all.filter(v=>/^en[-_]/i.test(v.lang)&&/us/i.test(v.lang));
+ if(!voices.length)voices=all.filter(v=>/^en/i.test(v.lang));
+ if(!voices.length)return null;
+ // Keep one voice for the whole call.
+ const first=norm(scenario()?.caller||'').split(' ')[0],sex=FEMALE_NAMES.has(first)?'f':MALE_NAMES.has(first)?'m':'';
+ if(sex){const sub=voices.filter(v=>(sex==='f'?FEMALE_VOICE:MALE_VOICE).test(v.name));if(sub.length)voices=sub;}
+ const key=String(practice?.id||'0')+'|'+String(practice?.started||'');
+ if(callVoice.key===key){const same=voices.find(v=>v.name===callVoice.name);if(same)return same;}
+ const id=String(practice?.id||'0');let n=0;for(const c of id)n=(n*33+c.charCodeAt(0))>>>0;
+ const chosen=voices[n%voices.length];callVoice={key,name:chosen.name};return chosen;
+}
+function speak(t){
+ if(!voiceOn||!('speechSynthesis' in window)||!t)return;
+ const seq=++voiceSequence;
+ try{
+  if(recognition){try{recognition.abort()}catch(e){}recognition=null;micListening=false;}
+  speechSynthesis.cancel();
+  const utterance=new SpeechSynthesisUtterance(String(t));
+  const voice=pickCallerVoice();if(voice)utterance.voice=voice;
+  const id=String(practice?.id||'0');let num=0;for(const c of id)num+=c.charCodeAt(0);
+  utterance.lang=voice?.lang||'en-US';utterance.rate=[.95,1,1.05,.91][num%4];utterance.pitch=[.9,1,1.06,.98][num%4];utterance.volume=1;
+  utterance.onstart=()=>{if(seq===voiceSequence){speakingNow=true;setAudioStatus('Caller is speaking…','speaking')}};
+  utterance.onend=()=>{if(seq===voiceSequence){speakingNow=false;setAudioStatus('Caller line active')}};
+  utterance.onerror=(e)=>{if(seq===voiceSequence){speakingNow=false;setAudioStatus('Audio unavailable — replay or show transcript');if(e.error!=='interrupted'&&e.error!=='canceled')toast('Audio could not play. Use Show transcript or Replay.')}};
+  // Safari iOS allows synthesis after a user-initiated call start / question.
+  speechSynthesis.speak(utterance);
+  speakingNow=true;setAudioStatus('Caller is speaking…','speaking');
+ }catch(e){speakingNow=false;setAudioStatus('Audio unavailable — show transcript');toast('Could not start caller audio.');}
+}
+function speakLast(){
+ const m=practice?.messages.slice().reverse().find(x=>x.role!=='operator');if(!m)return;
+ if(!voiceOn)setCallerAudio(true);
+ speak(m.text);
+}
+function toggleCaptions(force){
+ if(!practice)return;
+ practice.captionsHidden=typeof force==='boolean'?!force:!practice.captionsHidden;
+ const transcript=$('#transcript'),note=$('#captionsHidden'),toggle=$('#captionToggle');
+ if(transcript){transcript.hidden=!!practice.captionsHidden;transcript.setAttribute('aria-hidden',String(!!practice.captionsHidden))}
+ if(note)note.hidden=!practice.captionsHidden;
+ if(toggle)toggle.textContent=practice.captionsHidden?'Show transcript':'Hide transcript';
+ save();
+}
+function startMic(){
+ if(!practice)return;
+ if(recognition&&micListening){try{recognition.stop()}catch(e){}return;}
+ if(!SpeechRecognitionAPI){toast('In-app microphone unsupported. Use iPhone keyboard dictation or type your question.');const x=practicePane==='cad'?$('#cadQuestion'):$('#question');x?.focus();return;}
+ try{
+  ++voiceSequence;
+  if('speechSynthesis' in window)speechSynthesis.cancel();speakingNow=false;
+  const r=new SpeechRecognitionAPI();recognition=r;r.lang='en-US';r.interimResults=false;r.maxAlternatives=1;r.continuous=false;
+  r.onstart=()=>{micListening=true;setAudioStatus('Listening — ask one question','listening')};
+  r.onresult=e=>{
+   const phrase=Array.from(e.results).map(x=>x[0]?.transcript||'').join(' ').trim();
+   if(phrase){practice.voiceQuestions=(practice.voiceQuestions||0)+1;sendQuestion(phrase);}
+  };
+  r.onerror=e=>{micListening=false;setAudioStatus('Microphone stopped');if(e.error!=='no-speech'&&e.error!=='aborted')toast('Microphone: '+e.error+'. Use iOS keyboard dictation or type.');};
+  r.onend=()=>{micListening=false;recognition=null;if(!speakingNow)setAudioStatus('Caller line active')};
+  r.start();
+ }catch(e){micListening=false;recognition=null;setAudioStatus('Microphone unavailable');toast('Microphone could not start. Type or use keyboard dictation.');}
+}
+
+function rubricFor(s){return [...RUBRIC.common,...(RUBRIC[s.code]||[])];}
+const NARR_FIELDS=['cross','suspect','vehicle','plate','direction','medical','safety','details','updates'];
+const GENERIC_REPLY_KEYS=['suspect','vehicle','plate','direction','children','weapon','injuries','substances','time','safety'];
+// Categories where a recognised keyword is accepted without comparing to the scenario fact.
+const LENIENT_KEYS=['contact','children','substances','audible','reset','officer','driveable','roadway','safety','keyholder'];
+const FIELD_FOR={suspect:'suspect',vehicle:'vehicle',direction:'direction'};
+const KW={
+ weapon:/\b(gun|handgun|pistol|rifle|firearm|weapons?|knife|bat|bottle|armed|unarmed)\b/,
+ injuries:/\b(hurt|injury|injuries|injured|bleed|bleeding|blood|wound|pain|conscious|unconscious|ambulance|medics?|dizzy|uninjured)\b/,
+ children:/\b(kids?|children|child|baby|juveniles?|infant)\b/,
+ substances:/\b(alcohol|drunk|drinking|intoxicated|impaired|drugs?|sober|hbd|dui)\b/,
+ safety:/\b(smoke|fire|hazard|airbags?|leak|fuel|gas|safe|locked)\b/,
+ suspect:/\b(suspect|subject|male|female|man|woman|men|driver|hoodie|jacket|beard)\b/,
+ vehicle:/\b(car|vehicle|truck|pickup|suv|subaru|ford|toyota|chevrolet|chevy|honda|ram|outback|highlander|escape)\b/,
+ direction:/\b(north|south|east|west|northbound|southbound|eastbound|westbound|nb|sb|eb|wb|toward|heading|turn|turned|last seen|still (there|on scene))\b/,
+ time:/\b(min|mins|minutes?|hours?|ago|started|since|just (happened|occurred)|\d{4}\s*hours)\b/,
+ physical:/\b(verbal|physical|fight|fighting|push|pushed|shove|shoving|punch|punched|hit|hitting|struck|argument|arguing|yelling|assault|kicking|threats?|threatening)\b/,
+ contact:/\b(contact|talk|speak|stand by|standing by|stay|remain|meet|call back|anonymous)\b/,
+ company:/\b(monitoring|security|alarm|guardian|securewatch|pacific)\b/,
+ business:/\b(owner|premises|business|property|residence|residential|commercial|homeowner|auto parts|auto repair)\b/,
+ alarmType:/\b(zone|alarm|motion|contact|sensor|door|office|warehouse|showroom)\b/,
+ audible:/\b(audible|silent|siren)\b/,
+ reset:/\b(reset|active)\b/,
+ trip:/\b(trip|activation|activated|tripped|signal|\d{4})\b/,
+ premises:/\b(premises|prem|house phone|business phone|907 ?555 ?\d{4})\b/,
+ keyholder:/\b(keyholder|owner|contact|contacted|answer|authorized|out of town|no one expected|rp)\b/,
+ driveable:/\b(driveable|drivable|disabled|move|moving|inoperable|towed|tow|tire)\b/,
+ roadway:/\b(block|blocked|blocking|lane|roadway|intersection|traffic)\b/,
+ officer:/\b(officer|police|request|dispute|response|witness)\b/
+};
+const STOPWORDS=new Set(('the and that this with from have has had was were are his her him she they them their there then than but not for you your our out who what when where which while into onto over under about around after before just very really also been being its can could would should will did does don doesn isn haven hasn didn wasn got get see saw seen look looked looks know think maybe might may some any both each other another now far well yes sure tell told say said says like here name far too').split(' '));
+const NUMWORDS={zero:0,one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10,eleven:11,twelve:12,thirteen:13,fourteen:14,fifteen:15,sixteen:16,seventeen:17,eighteen:18,nineteen:19,twenty:20,thirty:30,forty:40,fifty:50,sixty:60,seventy:70,eighty:80,ninety:90};
+const CANON={handgun:'gun',pistol:'gun',firearm:'gun',revolver:'gun',pickup:'truck',kids:'child',kid:'child',children:'child',drunk:'alcohol',drinking:'alcohol',intoxicated:'alcohol',hammered:'alcohol',hbd:'alcohol',hurt:'injured',bleeding:'blood',bleed:'blood',nb:'northbound',sb:'southbound',eb:'eastbound',wb:'westbound',north:'northbound',south:'southbound',east:'eastbound',west:'westbound',unk:'unknown',veh:'vehicle',susp:'suspect',min:'minutes',mins:'minutes',chevy:'chevrolet',blk:'black',wht:'white',grn:'green',blu:'blue',gry:'gray',grey:'gray',sil:'silver',apt:'apartment',bldg:'building',twd:'toward',towards:'toward'};
+const own=(o,k)=>Object.prototype.hasOwnProperty.call(o,k);
+const MODE_NAMES={guided:'Guided practice',live:'Independent practice',exam:'Blind practical'};
+const MODE_DESC={guided:'A checklist shows what to ask. Tap an item for a sample question.',live:'You know the call type. No checklist and no hints.',exam:'Random call with the type hidden. No hints until the review.'};
+const CAD_LABELS={location:'Location',cross:'Cross street or unit',callType:'Event code',priority:'Priority',callerName:'Caller name',callback:'Callback number',suspect:'Subject or suspect',vehicle:'Vehicle',plate:'License plate',direction:'Direction or last seen',medical:'Medical and injuries',safety:'Weapons, hazards, children',details:'Narrative',updates:'Updates'};
+const FACT_LABELS={cross:'Cross street or unit',incident:'What happened',weapon:'Weapons',injuries:'Injuries',physical:'Physical or verbal',time:'Time lapse',suspect:'Subject description',vehicle:'Vehicle',plate:'License plate',direction:'Direction or last seen',children:'Children',substances:'Alcohol or drugs',contact:'Caller contact',safety:'Hazards and caller safety',company:'Monitoring company',business:'Premises or owner',alarmType:'Alarm zone or type',audible:'Audible or silent',reset:'Reset status',trip:'Time of activation',premises:'Premises phone',keyholder:'Keyholder',driveable:'Driveability',roadway:'Roadway',officer:'Officer response'};
+const factLabel=k=>own(FACT_LABELS,k)?FACT_LABELS[k]:k;
+const SAMPLE_Q={location:'What is the address of the emergency?',incident:'Tell me exactly what is happening.',callerName:'What is your name?',callerPhone:'What is your callback number?',weapon:'Are there any weapons involved?',injuries:'Is anyone hurt?',physical:'Is it physical or only verbal?',suspect:'Can you describe the suspect?',vehicle:'What kind of vehicle is involved?',plate:'What is the license plate?',direction:'Which direction did they go?',children:'Are there any children there?',substances:'Has anyone been using alcohol or drugs?',contact:'Will you stay and meet the officer?',time:'How long ago did this start?',driveable:'Are the vehicles drivable?',roadway:'Is the roadway blocked?',safety:'Is there any fire, smoke or leaking fuel?',officer:'Do you need an officer to respond?',company:'What is the name of your alarm company?',business:'What is the business name or property owner?',alarmType:'What type of alarm is it, and which zone?',audible:'Is the alarm audible or silent?',reset:'Has the alarm reset?',trip:'What time did the alarm go off?',premises:'What is the premises phone?',keyholder:'Has a keyholder been contacted?'};
+const svg=d=>`<svg viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
+const ICONS={home:svg('<path d="M4 11l8-7 8 7"/><path d="M6 10v9h12v-9"/>'),study:svg('<path d="M5 4h11a3 3 0 013 3v13H8a3 3 0 01-3-3z"/><path d="M9 8h6M9 12h6"/>'),practice:svg('<path d="M6 3h3l2 5-2.5 1.5a11 11 0 006 6L16 13l5 2v3a3 3 0 01-3 3A15 15 0 013 6a3 3 0 013-3z"/>'),history:svg('<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>'),bank:svg('<path d="M4 6h16M4 12h16M4 18h16"/><circle cx="8" cy="6" r="1.2"/><circle cx="14" cy="12" r="1.2"/><circle cx="10" cy="18" r="1.2"/>')};
+const scoreClass=n=>n>=85?'good':n>=65?'mid':'low';
+const plural=(n,w)=>n+' '+w+(n===1?'':'s');
+function factTokens(text){
+ let t=String(text||'').replace(/\b(\d{1,2}):(\d{2})\b/g,(_,h,m)=>h.padStart(2,'0')+m);
+ t=norm(t).split(' ').map(w=>own(NUMWORDS,w)?String(NUMWORDS[w]):w).join(' ').replace(/\b([2-9]0) ([1-9])\b/g,(_,a,b)=>String(Number(a)+Number(b)));
+ const out=new Set();
+ for(let w of t.split(' ')){if(!w)continue;if(own(CANON,w))w=CANON[w];if(/^\d+$/.test(w)){if(w.length>=2)out.add(w)}else if(w.length>=3&&!STOPWORDS.has(w))out.add(w);}
+ return [...out];
+}
+function tokenMatch(a,b){
+ if(a===b)return true;if(/^\d+$/.test(a)||/^\d+$/.test(b))return false;
+ const sh=a.length<=b.length?a:b,lo=sh===a?b:a;
+ return sh.length>=5?lo.slice(0,5)===sh.slice(0,5):lo.startsWith(sh);
+}
+// How many distinct words of the scenario fact appear in the trainee's CAD text.
+function factOverlap(factText,cadText){const ft=factTokens(factText),ct=factTokens(cadText);return{n:ft.filter(t=>ct.some(c=>tokenMatch(t,c))).length,total:ft.length};}
+// Returns 'match' (entry agrees with scenario facts), 'entered' (text present, not matched) or '' (missing).
+function documented(key,cad,s,updateGiven){
+ const f=s.facts||{},upd=updateGiven?(s.updateFacts||BUILT_IN_UPDATE_FACTS[s.id]||{}):{};
+ const B=v=>v?'match':'';
+ if(key==='code')return B(norm(cad.callType)===norm(s.code));
+ if(key==='location'){
+  let val=norm(cad.location+' '+cad.cross);let parts=norm(s.location.replace(/\(.*?\)/g,'')).split(' ').filter(w=>w.length>2&&!['anchorage','avenue','street','road','highway','near','eastbound','westbound','northbound','southbound','building','parking','lot','apartment','commercial','residential','fictional','numbered','address'].includes(w));let matched=parts.filter(w=>val.split(' ').includes(w));return B(matched.length>=Math.min(2,parts.length));
+ }
+ if(key==='callerName'){const last=norm(s.caller).split(' ').slice(-1)[0];return B(!!last&&norm(cad.callerName).includes(last));}
+ if(key==='callerPhone'){const want=String(s.phone||'').replace(/\D/g,'');return B(!!want&&String(cad.callback||'').replace(/\D/g,'').endsWith(want));}
+ if(key==='plate'){const found=(String(cad.plate||'')+' '+String(cad.details||'')).toUpperCase().replace(/[^A-Z0-9]/g,'');const known=Array.from(String(f.plate||'').toUpperCase().matchAll(/\b[A-Z]{2,4}\s*\d{2,4}\b/g),m=>m[0].replace(/[^A-Z0-9]/g,''));if(known.length)return B(known.some(k=>found.includes(k)));return B(/\b(no plate|plate unknown|unknown|unk|not seen|unable to read|could not read|partial plate|no tag|none|no vehicle)\b/i.test((cad.plate||'')+' '+(cad.details||'')));}
+ const raw=NARR_FIELDS.map(k=>cad[k]||'').join(' ')+(key==='company'?' '+(cad.callerName||''):'');
+ const narr=norm(raw);
+ const filled=k=>{const v=String(cad[k]||'').trim();return v.length>=3&&!/^(unknown|unk|none|n\/?a|test|abc|xxx|unavailable|not sure|no info|not known)$/i.test(v);};
+ let present;
+ if(key==='incident'){const v=norm(cad.details);present=v.length>=15&&!/^(test|example|placeholder|incident occurred|something happened|a problem happened)/.test(v);}
+ else present=(FIELD_FOR[key]&&filled(FIELD_FOR[key]))||(KW[key]?KW[key].test(narr):filled('details'));
+ if(!present)return '';
+ const factText=[f[key],upd[key],key==='incident'?s.opening:''].filter(Boolean).join(' ');
+ if(!factText||LENIENT_KEYS.includes(key))return 'match';
+ const ov=factOverlap(factText,raw);if(!ov.total)return 'match';
+ const need=(['suspect','vehicle','direction','incident'].includes(key)&&ov.total>=5)?2:1;
+ return ov.n>=Math.min(need,ov.total)?'match':'entered';
+}
+function grade(p,s){const crit=[];
+ const items=rubricFor(s).map(([key,label,,critical])=>{
+  const isCode=key==='code',asked=isCode?true:p.asked.includes(key),noted=documented(key,p.cad,s,p.updateGiven);
+  // Documentation carries the score; a recognised question without a CAD entry earns partial credit only.
+  const points=isCode?(noted?1:0):noted==='match'?1:noted==='entered'?(asked?.65:.5):asked?.3:0;
+  if(critical&&!noted)crit.push(label+(asked&&!isCode?' — asked, not documented':''));
+  return{key,label,asked,noted,critical,points};});
+ const locOK=!!p.locQ&&p.locQ<=2;
+ items.push({key:'locFirst',label:'Asked for location within the first two questions',asked:locOK,noted:'na',critical:false,points:locOK?1:0});
+ if(p.updateGiven){
+  const upd=s.updateFacts||BUILT_IN_UPDATE_FACTS[s.id]||{};
+  const text=String(p.cad.updates||'').trim(),ov=factOverlap([s.development,...Object.values(upd)].join(' '),text);
+  const noted=text.length>=6?(ov.n>=Math.min(2,ov.total)?'match':'entered'):'';
+  items.push({key:'update',label:'Documented new development (Updates field)',asked:true,noted,critical:true,points:noted==='match'?1:noted==='entered'?.5:0});
+  if(!noted)crit.push('Development not documented');
+ }
+ let score=Math.round(items.reduce((sum,x)=>sum+x.points,0)/items.length*100);return{score,items,critical:crit,asked:p.asked.length,questionCount:p.questions,elapsed:elapsed()};}
+function checkMarkers(i){
+ if(i.key==='locFirst')return `<span class="marker ${i.asked?'yes':'no'}">${i.asked?'Met':'Not met'}</span><span class="marker neutral">—</span>`;
+ const n=i.noted===true||i.noted==='match'?['yes','Documented']:i.noted==='entered'?['neutral','Unverified']:['no','Missing'];
+ const a=i.key==='code'||i.key==='update'?'<span class="marker neutral">—</span>':`<span class="marker ${i.asked?'yes':'no'}">${i.asked?'Asked':'Not asked'}</span>`;
+ return a+`<span class="marker ${n[0]}">${n[1]}</span>`;
+}
+function stopCallAudio(){if(recognition){try{recognition.abort()}catch(e){}recognition=null;micListening=false}if('speechSynthesis' in window){voiceSequence++;try{speechSynthesis.cancel()}catch(e){}speakingNow=false;}}
+async function discardCall(){if(!practice)return;if(!await confirmDialog('Discard this call?','The call and its CAD entry are deleted. Nothing is saved to History.','Discard call',true))return;if(!practice)return;stopCallAudio();practice=null;save();document.body.classList.remove('in-call');renderPage();toast('Call discarded.');}
+function customId(id,i){const c=String(id??'').replace(/[^a-zA-Z0-9-]/g,'');return /^U/.test(c)?c:'U'+(c||Date.now()+'-'+i);}
+function cleanFacts(o){return Object.fromEntries(Object.entries(o&&typeof o==='object'&&!Array.isArray(o)?o:{}).filter(([,v])=>typeof v==='string'||typeof v==='number').map(([k,v])=>[k,String(v)]));}
+function cleanScenario(v,id){const o={id,code:v.code,variant:String(v.variant??'Imported scenario'),location:v.location,opening:v.opening,caller:v.caller,phone:v.phone,development:v.development,priority:String(v.priority??''),facts:cleanFacts(v.facts)};const u=cleanFacts(v.updateFacts);if(Object.keys(u).length)o.updateFacts=u;return o;}
+async function endCall(){if(!practice)return;if(!await confirmDialog('End the call?','The call is scored and saved to History. You cannot reopen it.','End call and review',false))return;if(!practice)return;stopCallAudio();const s=scenario();const review=grade(practice,s);let rec={id:'session-'+Date.now()+'-'+Math.floor(Math.random()*10000),scenarioId:s.id,code:s.code,variant:s.variant,mode:practice.mode,voiceQuestions:practice.voiceQuestions||0,started:practice.started,ended:new Date().toISOString(),cad:{...practice.cad},transcript:practice.messages.map(x=>({...x})),asked:[...practice.asked],updateGiven:practice.updateGiven,...review};store.history.unshift(rec);store.history=store.history.slice(0,800);lastReview=rec;practice=null;save();navigate('review');}
+function reviewHTML(rec){
+ if(!rec)return `<div class="empty">No review is open. Pick a completed call from History.<br><button class="btn" onclick="navigate('history')">Open History</button></div>`;
+ const s=allScenarios().find(x=>x.id===rec.scenarioId),items=rec.items||[],score=Math.max(0,Math.min(100,Number(rec.score)||0));
+ const status=score>=85?'Strong coverage':score>=65?'Partial coverage':'Major gaps';
+ const m=own(MODE_NAMES,rec.mode)?rec.mode:'guided',who={operator:'Dispatcher',caller:'Caller',update:'Caller update'};
+ return `<div class="intro"><h1>Call ${esc(rec.scenarioId)} review</h1><p><span class="codechip">${esc(rec.code)}</span> ${esc(CODE_NAMES[rec.code]||rec.variant||'')}. ${esc(MODE_NAMES[m])}, ${plural(Number(rec.questionCount)||0,'question')} in ${asClock(Number(rec.elapsed)||0)}.</p></div>
+<div class="resultGrid"><div>
+<div class="card"><div class="scoreRing ${scoreClass(score)}" style="--pct:${score}%"><div><strong>${score}%</strong><span>practice score</span></div></div><h2 style="text-align:center">${status}</h2><div class="rule"></div><h3>Fix first</h3>${rec.critical?.length?`<ul class="fixlist">${rec.critical.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'<p class="small" style="margin-top:6px">The checker found no critical gaps.</p>'}</div>
+<div class="card"><div class="actions"><button class="btn primary" onclick="quickStart('${m}')">Take another call</button>${own(STUDY,rec.code)?`<button class="btn" onclick="studyTopic('${rec.code}')">Study ${rec.code}</button>`:''}<button class="btn ghost" onclick="window.print()">Print</button></div></div>
+<p class="small" style="margin-top:12px">This is not an academy grade. Documentation carries most of the score. The checker compares words, so unusual abbreviations can show as Unverified.</p>
+</div><div>
+<div class="card"><div class="sectionhead"><h2>Checklist</h2></div><div class="legend"><span><b>Asked</b>: the simulator recognized your question</span><span><b>Documented</b>: your entry matches the scenario</span><span><b>Unverified</b>: text entered, not matched</span></div>${items.map(i=>`<div class="checkrow"><span>${esc(i.label)}${i.critical?'<span class="crit">critical</span>':''}</span>${checkMarkers(i)}</div>`).join('')}</div>
+<details class="fold"><summary>Answer key</summary><div class="foldbody">${s?`<div class="review-details"><div class="item"><b>Location</b>${esc(s.location)}</div><div class="item"><b>Caller</b>${esc(s.caller+', '+s.phone)}</div><div class="item"><b>Opening statement</b>${esc(s.opening)}</div><div class="item"><b>Caller update</b>${esc(s.development)}</div>${Object.entries(s.facts||{}).map(([k,v])=>`<div class="item"><b>${esc(factLabel(k))}</b>${esc(v)}</div>`).join('')}</div>`:'<p class="muted">This scenario is no longer in the scenario list.</p>'}</div></details>
+<details class="fold"><summary>Your CAD entry</summary><div class="foldbody">${Object.entries(rec.cad||{}).map(([k,v])=>`<div class="cadrow"><b>${esc(own(CAD_LABELS,k)?CAD_LABELS[k]:k)}</b><span>${esc(v||'—')}</span></div>`).join('')}</div></details>
+<details class="fold"><summary>Call transcript</summary><div class="foldbody">${(rec.transcript||[]).map(x=>`<p class="tline"><b>${esc(who[x.role]||x.role)}:</b> ${esc(x.text)}</p>`).join('')}</div></details>
+</div></div>`;}
+function renderReview(){$('#review').innerHTML=reviewHTML(lastReview);}
+function showReview(id){lastReview=store.history.find(x=>x.id===id)||null;navigate('review');}
+function renderHistory(){const h=store.history||[],stats=codeStats().sort((a,b)=>a.code.localeCompare(b.code));
+ $('#history').innerHTML=`<div class="intro"><h1>History</h1><p>Completed calls are saved in this browser only. Export a backup to keep them or move them to another device.</p></div>
+<div class="card"><div class="sectionhead"><div><h2>${plural(h.length,'completed call')}</h2></div><div class="actions"><button class="btn sm" onclick="exportHistoryCSV()" ${h.length?'':'disabled'}>Export CSV</button><button class="btn sm" onclick="exportBackup()">Backup JSON</button><button class="btn sm ghost danger" onclick="clearHistory()" ${h.length?'':'disabled'}>Clear history</button></div></div>
+${stats.length?`<div class="typechips" aria-label="Average score by call type">${stats.map(t=>`<span class="pill ${scoreClass(t.avg)}">${t.code} ${t.avg}% (${t.n})</span>`).join('')}</div><p class="small" style="margin-bottom:6px">Average by call type, with the number of calls.</p>`:''}
+${h.length?h.map(r=>{const n=Math.max(0,Math.min(100,Number(r.score)||0));return `<div class="historyrow"><div class="left"><strong><span class="codechip">${esc(r.code)}</span> ${esc(r.variant)}</strong><small>${esc(dateFmt(r.ended))}, ${esc(MODE_NAMES[r.mode]||r.mode)}, ${plural(Number(r.questionCount)||0,'question')}</small></div><div class="actions"><span class="pill ${scoreClass(n)}">${n}%</span><button class="btn sm" onclick="showReview('${esc(r.id)}')">Open review</button></div></div>`}).join(''):`<div class="empty">No completed calls yet.<br><button class="btn primary" onclick="quickStart('guided')">Answer a guided call</button></div>`}</div>
+<p class="small" style="margin-top:14px">Backup JSON includes history, custom scenarios and quiz progress. Restore it from the Scenarios page.</p>`;}
+async function clearHistory(){if(!await confirmDialog('Clear all history?','Every completed call saved in this browser is deleted. Export a backup first if you need the records.','Clear history',true))return;store.history=[];lastReview=null;save();renderHistory();toast('History cleared.');}
+function csvLine(arr){return arr.map(x=>{let v=String(x??'');if(/^[\s]*[=+@]/.test(v))v="'"+v;return '"'+v.replace(/"/g,'""')+'"'}).join(',')}
+function download(name,text,mime){const blob=new Blob([text],{type:mime}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2500)}
+function exportHistoryCSV(){let h=['Session ID','Scenario','Call Type','Mode','Completed','Score','Questions','Elapsed Seconds','Critical Gaps',...ALL_FIELDS];let rows=[h,...store.history.map(r=>[r.id,r.scenarioId,r.code,r.mode,r.ended,r.score,r.questionCount,r.elapsed,(r.critical||[]).join('; '),...ALL_FIELDS.map(k=>r.cad?.[k]||'')])];download('Dispatch_Practice_History.csv',rows.map(csvLine).join('\r\n'),'text/csv;charset=utf-8');toast('CSV history exported.');}
+function exportBackup(){download('Dispatch_Academy_Backup.json',JSON.stringify({type:'dispatch-academy-backup',version:2,savedAt:new Date().toISOString(),store},null,2),'application/json');toast('Backup exported.');}
+function exportBank(){download('Dispatch_Scenario_Bank.json',JSON.stringify({type:'dispatch-academy-scenarios',version:2,scenarios:allScenarios()},null,2),'application/json');toast('Scenario bank downloaded.');}
+function renderBank(){const all=allScenarios();
+ $('#bank').innerHTML=`<div class="intro"><h1>Scenarios</h1><p>${plural(all.length,'scenario')} across six call types. Answer keys stay hidden unless you show them.</p></div>
+<div class="card"><div class="sectionhead"><h2>Scenario list</h2><div class="actions"><button class="btn sm" onclick="showBankAnswers=!showBankAnswers;renderBank()" aria-pressed="${showBankAnswers}">${showBankAnswers?'Hide answer keys':'Show answer keys'}</button><button class="btn primary sm" onclick="customModal()">Add scenario</button></div></div>
+${all.map(s=>{const custom=(store.custom||[]).some(x=>x.id===s.id);return `<div class="bankitem"><div class="lead"><span class="codechip">${esc(s.code)}</span><div><b>Call ${esc(s.id)}: ${esc(s.variant)}</b><small>${showBankAnswers?esc(s.location):custom?'Custom scenario':'Built-in scenario'}</small></div></div><div class="actions">${showBankAnswers?`<button class="btn sm" onclick="scenarioModal('${esc(s.id)}')">View facts</button>`:''}${custom?`<button class="btn ghost danger sm" onclick="deleteCustom('${esc(s.id)}')">Delete</button>`:''}</div></div>`}).join('')}</div>
+<div class="card"><h3>Move data between devices</h3><p class="small" style="margin:6px 0 14px;max-width:70ch">Scenario files hold scenarios only. A backup holds history, custom scenarios and quiz progress, and restoring one replaces what is saved here.</p><div class="actions"><button class="btn" onclick="exportBank()">Export scenarios</button><label class="btn" for="importScenarios">Import scenarios<input class="hidden" id="importScenarios" type="file" accept=".json,application/json" onchange="importFile(event,'scenarios')"></label><button class="btn" onclick="exportBackup()">Export backup</button><label class="btn" for="importBackup">Restore backup<input class="hidden" id="importBackup" type="file" accept=".json,application/json" onchange="importFile(event,'backup')"></label></div></div>`;}
+let modalResolve=null,modalReturnFocus=null;
+function closeModal(){$('#modalBg').classList.remove('show');$('#modal').classList.remove('narrow');$('#modal').innerHTML='';if(modalResolve){const r=modalResolve;modalResolve=null;r(false);}try{modalReturnFocus?.focus?.()}catch(e){}modalReturnFocus=null;}
+function openModal(h,narrow){if(!$('#modalBg').classList.contains('show'))modalReturnFocus=document.activeElement;$('#modal').classList.toggle('narrow',!!narrow);$('#modal').innerHTML=h;$('#modalBg').classList.add('show');const f=$('#modal [autofocus]')||$('#modal input,#modal select,#modal textarea,#modal button');try{f?.focus()}catch(e){}}
+// In-page confirmation. Replaces the browser confirm() box, which some embedded hosts block.
+function confirmDialog(title,body,okLabel,danger){if(modalResolve){const r=modalResolve;modalResolve=null;r(false);}return new Promise(res=>{openModal(`<h2 id="modalTitle">${esc(title)}</h2><p>${esc(body)}</p><div class="actions right"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn ${danger?'dangerfill':'primary'}" autofocus onclick="confirmYes()">${esc(okLabel)}</button></div>`,true);modalResolve=res;});}
+function confirmYes(){const r=modalResolve;modalResolve=null;closeModal();if(r)r(true);}
+function scenarioModal(id){const s=allScenarios().find(x=>x.id===id);if(!s)return;openModal(`<div class="sectionhead"><div><h2 id="modalTitle">Call ${esc(s.id)} · ${esc(s.code)}</h2></div><button class="btn sm" onclick="closeModal()">Close</button></div><div class="item"><b>Location</b><p>${esc(s.location)}</p></div><div class="item"><b>Opening</b><p>${esc(s.opening)}</p></div><div class="item"><b>Caller</b><p>${esc(s.caller)} · ${esc(s.phone)}</p></div><div class="item"><b>Development</b><p>${esc(s.development)}</p></div><div class="dividerTitle">All available details</div>${Object.entries(s.facts||{}).map(([k,v])=>`<div class="item"><b>${esc(factLabel(k))}</b>${esc(v)}</div>`).join('')}`);}
+const FACT_KEYS=['cross','incident','weapon','injuries','physical','time','suspect','vehicle','plate','direction','children','substances','contact','safety','company','business','alarmType','audible','reset','trip','premises','keyholder','driveable','roadway','officer'];
+function customModal(){openModal(`<div class="sectionhead"><div><h2 id="modalTitle">Add a custom mock call</h2></div><button class="btn sm" onclick="closeModal()">Close</button></div><p>Enter fictional information. This works best when the facts match the six standard event codes. Give each question category one clear answer; unknown is an acceptable answer.</p><form id="customForm" onsubmit="event.preventDefault();saveCustom()"><div class="fieldset two"><div class="field"><label>Event code</label><select name="code">${Object.keys(CODE_NAMES).map(c=>`<option value="${c}">${c}</option>`).join('')}</select></div><div class="field"><label>Short variation label</label><input name="variant" required maxlength="80" placeholder="Apartment argument"></div><div class="field full"><label>Incident location</label><input name="location" required placeholder="Real intersection or fictional numbered address"></div><div class="field full"><label>Caller opening (read aloud)</label><textarea name="opening" required placeholder="What the caller first says"></textarea></div><div class="field"><label>Fictional caller name</label><input name="caller" required placeholder="Jane Caller"></div><div class="field"><label>Fictional callback</label><input name="phone" required value="907-555-0100"></div><div class="field full"><label>Timed development</label><textarea name="development" required placeholder="What changes during the call"></textarea></div><div class="field full"><label>Known incident description (if asked)</label><textarea name="incident" required placeholder="What actually happened"></textarea></div><div class="field full"><label>Additional answers — one key = answer per line</label><textarea name="answers" style="min-height:150px" placeholder="weapon = I haven't seen a weapon.\ninjuries = No one is hurt.\nsuspect = White man, about thirty, gray hoodie.\ndirection = He went west on Tudor."></textarea></div><div class="field full"><label>Answers after the development (optional) — one key = answer per line</label><textarea name="updateAnswers" placeholder="direction = He just drove off north on Bragaw."></textarea></div></div><div class="actions" style="margin-top:19px"><button type="submit" class="btn primary">Save scenario</button><button type="button" class="btn" onclick="closeModal()">Cancel</button></div></form><div class="subnote">Supported keys: ${FACT_KEYS.join(', ')}. The caller's name, callback and incident location are automatically available.</div>`);}
+function saveCustom(){const f=$('#customForm'),d=Object.fromEntries(new FormData(f).entries());const parse=t=>{const o={};for(const line of String(t||'').split('\n')){const n=line.indexOf('=');if(n<1)continue;let k=line.slice(0,n).trim(),v=line.slice(n+1).trim();if(FACT_KEYS.includes(k)&&v)o[k]=v;}return o;};let facts={incident:String(d.incident).trim(),...parse(d.answers)};const updateFacts=parse(d.updateAnswers);const sc={id:'U'+Date.now(),code:d.code,variant:String(d.variant).trim(),location:String(d.location).trim(),opening:String(d.opening).trim(),caller:String(d.caller).trim(),phone:String(d.phone).trim(),development:String(d.development).trim(),priority:'Academy policy to determine',facts};if(Object.keys(updateFacts).length)sc.updateFacts=updateFacts;if(!sc.location||!sc.opening||!sc.caller){toast('Location, opening and caller are required.');return;}store.custom.push(sc);save();closeModal();renderBank();toast('Custom scenario saved.');}
+async function deleteCustom(id){if(!await confirmDialog('Delete this scenario?','The custom scenario is removed from this browser. Past reviews of it lose their answer key.','Delete scenario',true))return;store.custom=store.custom.filter(x=>x.id!==id);save();renderBank();toast('Scenario deleted.');}
+function validScenario(s){return s&&typeof s==='object'&&!Array.isArray(s)&&Object.prototype.hasOwnProperty.call(CODE_NAMES,s.code)&&typeof s.opening==='string'&&typeof s.location==='string'&&typeof s.development==='string'&&typeof s.caller==='string'&&typeof s.phone==='string'&&s.facts&&typeof s.facts==='object'&&!Array.isArray(s.facts);}
+async function importFile(e,kind){const file=e.target.files?.[0];e.target.value='';if(!file)return;try{let obj=JSON.parse(await file.text());if(kind==='backup'){if(obj.type!=='dispatch-academy-backup'||!obj.store||!Array.isArray(obj.store.history)||!Array.isArray(obj.store.custom))throw Error('Not a compatible backup');if(!await confirmDialog('Restore this backup?','This replaces the history, quiz progress and custom scenarios saved in this browser.','Restore backup',true))return;const safeHistory=obj.store.history.filter(r=>r&&typeof r==='object'&&r.cad&&typeof r.cad==='object').map(r=>({...r,id:String(r.id||'session').replace(/[^a-z0-9-]/gi,''),mode:['guided','live','exam'].includes(r.mode)?r.mode:'guided',score:Math.max(0,Math.min(100,Number(r.score)||0)),elapsed:Math.max(0,Number(r.elapsed)||0),critical:Array.isArray(r.critical)?r.critical.map(String):[]}));store={...store,...obj.store,history:safeHistory,custom:obj.store.custom.filter(validScenario).map((v,i)=>cleanScenario(v,customId(v.id,i)))};practice=null;lastReview=null;save();navigate('home');toast('Backup restored.');}else{let list=obj.scenarios||obj;if(!Array.isArray(list))throw Error('Expected array of scenarios');let all=list.filter(validScenario);if(!all.length)throw Error('No valid scenarios');let imported=0;for(const v of all){const rawId=String(v.id??'').replace(/[^a-zA-Z0-9-]/g,'');if(BUILT_IN.some(s=>s.id===rawId))continue;let id=customId(rawId,imported);if(store.custom.some(s=>s.id===id))id='U'+Date.now()+'-'+imported;store.custom.push(cleanScenario(v,id));imported++}save();renderBank();toast(plural(imported,'scenario')+' imported. Built-in duplicates were skipped.');}}catch(err){toast('Import failed: '+err.message)}}
+
+// iPhone/iPad: show either the caller or the CAD pane without re-rendering or losing entries.
+let practicePane='caller';
+function setPracticePane(p){
+  practicePane=p==='cad'?'cad':'caller';
+  const grid=$('#practice .simgrid');if(grid)grid.dataset.pane=practicePane;
+  for(const b of document.querySelectorAll('#practice .call-tab')){
+    const active=b.dataset.pane===practicePane;
+    b.classList.toggle('active',active);b.setAttribute('aria-selected',String(active));
+  }
+  const tabBar=$('#practice .call-tabs');
+  if(tabBar&&window.matchMedia('(max-width:920px)').matches){
+    const rect=tabBar.getBoundingClientRect();
+    if(rect.top<0||rect.top>window.innerHeight*.55)tabBar.scrollIntoView({block:'start',behavior:'instant'});
+  }
+}
+// On iOS, avoid covering the input with the fixed navigation when the keyboard opens.
+function initMobileKeyboard(){
+  document.addEventListener('focusin',e=>{if(e.target.matches('input,textarea,select'))document.body.classList.add('keyboard-open')});
+  document.addEventListener('focusout',e=>{if(e.target.matches('input,textarea,select'))setTimeout(()=>{if(!document.activeElement?.matches('input,textarea,select'))document.body.classList.remove('keyboard-open')},160)});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden){save();if('speechSynthesis' in window)speechSynthesis.cancel();}});
+  if(window.visualViewport){
+    window.visualViewport.addEventListener('resize',()=>{
+      if(!document.activeElement?.matches('input,textarea,select'))document.body.classList.remove('keyboard-open');
+    });
+  }
+}
+function mobileScrollToTop(){try{window.scrollTo({top:0,behavior:'instant'})}catch(e){window.scrollTo(0,0)}}
+
+function printPractice(){window.print()}
+function init(){initMobileKeyboard();navSetup();if('speechSynthesis' in window){try{speechSynthesis.getVoices();speechSynthesis.addEventListener?.('voiceschanged',()=>speechSynthesis.getVoices())}catch(e){}}if(store.draft&&allScenarios().some(s=>s.id===store.draft.id)&&store.draft.messages&&store.draft.cad){practice=store.draft;mode=practice.mode||'guided';if(typeof practice.captionsHidden!=='boolean')practice.captionsHidden=false;if(typeof practice.activeMs!=='number')practice.activeMs=0;}navigate('home');secondsTicker=setInterval(()=>{const now=Date.now(),d=now-lastTick;lastTick=now;if(!practice)return;if(page==='practice'&&!document.hidden&&d>0&&d<5000)practice.activeMs=(practice.activeMs||0)+d;let el=$('#timer');if(el)el.textContent=asClock(elapsed());if(page==='practice'&&practice.questions>=3&&elapsed()>=65&&!practice.updateGiven)triggerUpdate();},1000)}
+window.addEventListener('beforeunload',()=>save());$('#modalBg').addEventListener('click',e=>{if(e.target.id==='modalBg')closeModal()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#modalBg').classList.contains('show'))closeModal()});window.addEventListener('beforeprint',()=>{for(const d of document.querySelectorAll('details.fold'))d.open=true});init();
+</script>
+</body>
+</html>
